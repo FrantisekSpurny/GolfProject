@@ -1,0 +1,145 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="cz.spurny.Game.GameOnHole"
+    android:background="@color/GameOnHole_color_background"
+    android:id="@+id/GameOnHole_frameLayout_layout">
+
+
+    <cz.spurny.Library.TouchImageView
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:id="@+id/GameOnHole_touchImageView_courseImage">
+
+    </cz.spurny.Library.TouchImageView>
+
+    <TableLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|left"
+        android:layout_marginLeft="2dp"
+        android:layout_marginBottom="2dp"
+        android:background="@drawable/game_on_hole_border">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/game_on_hole_underline"
+            android:id="@+id/GameOnHole_tableRow_row1">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/GameOnHole_string_holeNumber"
+                android:id="@+id/GameOnHole_textView_row1"
+                android:layout_margin="3dp"/>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/game_on_hole_underline"
+            android:id="@+id/GameOnHole_tableRow_row2">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="2"
+                android:id="@+id/GameOnHole_textView_row2"
+                android:layout_margin="3dp"/>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/game_on_hole_underline"
+            android:id="@+id/GameOnHole_tableRow_row3">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/GameOnHole_string_par"
+                android:id="@+id/GameOnHole_textView_row3"
+                android:layout_margin="3dp"/>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/game_on_hole_underline"
+            android:id="@+id/GameOnHole_tableRow_row4">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="5/6"
+                android:id="@+id/GameOnHole_textView_row4"
+                android:layout_margin="3dp"/>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/game_on_hole_underline"
+            android:id="@+id/GameOnHole_tableRow_row5">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/GameOnHole_string_handicap"
+                android:id="@+id/GameOnHole_textView_row5"
+                android:layout_margin="3dp"/>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/game_on_hole_underline"
+            android:id="@+id/GameOnHole_tableRow_row6">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="12"
+                android:id="@+id/GameOnHole_textView_row6"
+                android:layout_margin="3dp"/>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/game_on_hole_underline"
+            android:id="@+id/GameOnHole_tableRow_row7">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/GameOnHole_string_holeLength"
+                android:id="@+id/GameOnHole_textView_row7"
+                android:layout_margin="3dp"/>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/GameOnHole_tableRow_row8">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="300m"
+                android:id="@+id/GameOnHole_textView_row8"
+                android:layout_margin="3dp"/>
+        </TableRow>
+    </TableLayout>
+
+</FrameLayout>

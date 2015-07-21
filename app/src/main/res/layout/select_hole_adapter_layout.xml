@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text=""
+        android:id="@+id/SelectHoleAdapter_textView_number"
+        android:layout_alignTop="@+id/SelectHoleAdapter_textView_nameTitle"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="10dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/SelectHoleAdapter_string_par"
+        android:id="@+id/SelectHoleAdapter_textView_parTitle"
+        android:layout_marginLeft="10dp"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/SelectHoleAdapter_textView_number"
+        android:layout_toEndOf="@+id/SelectHoleAdapter_textView_number" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/SelectHoleAdapter_string_name"
+        android:id="@+id/SelectHoleAdapter_textView_nameTitle"
+        android:layout_below="@+id/SelectHoleAdapter_textView_parTitle"
+        android:layout_alignLeft="@+id/SelectHoleAdapter_textView_parTitle"
+        android:layout_alignStart="@+id/SelectHoleAdapter_textView_parTitle" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/SelectHoleAdapter_string_course"
+        android:id="@+id/SelectHoleAdapter_textView_courseTitle"
+        android:layout_below="@+id/SelectHoleAdapter_textView_nameTitle"
+        android:layout_alignLeft="@+id/SelectHoleAdapter_textView_nameTitle"
+        android:layout_alignStart="@+id/SelectHoleAdapter_textView_nameTitle" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text=""
+        android:id="@+id/SelectHoleAdapter_textView_name"
+        android:layout_alignBottom="@+id/SelectHoleAdapter_textView_nameTitle"
+        android:layout_toRightOf="@+id/SelectHoleAdapter_textView_nameTitle"
+        android:layout_toEndOf="@+id/SelectHoleAdapter_textView_nameTitle"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text=""
+        android:id="@+id/SelectHoleAdapter_textView_par"
+        android:layout_alignParentTop="true"
+        android:layout_alignLeft="@+id/SelectHoleAdapter_textView_name"
+        android:layout_alignStart="@+id/SelectHoleAdapter_textView_name" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text=""
+        android:id="@+id/SelectHoleAdapter_textView_course"
+        android:layout_below="@+id/SelectHoleAdapter_textView_name"
+        android:layout_alignLeft="@+id/SelectHoleAdapter_textView_name"
+        android:layout_alignStart="@+id/SelectHoleAdapter_textView_name" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text=""
+        android:id="@+id/SelectHoleAdapter_textView_length"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/SelectHoleAdapter_string_lenght"
+        android:id="@+id/SelectHoleAdapter_textView_lengthTitle"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/SelectHoleAdapter_textView_length"
+        android:layout_toStartOf="@+id/SelectHoleAdapter_textView_length" />
+
+</RelativeLayout>

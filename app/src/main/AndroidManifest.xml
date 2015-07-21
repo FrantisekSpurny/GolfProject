@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="cz.spurny.CreateGame" >
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name=".MainMenu"
+            android:label="@string/MainMenu_string_title" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".SelectResort"
+            android:label="@string/SelectResort_string_title" >
+        </activity>
+        <activity
+            android:name=".SelectCourse"
+            android:label="@string/SelectCourse_string_title" >
+        </activity>
+        <activity
+            android:name="cz.spurny.Player.CreatePlayer"
+            android:label="@string/CreatePlayer_string_title" >
+        </activity>
+        <activity
+            android:name="cz.spurny.Player.EditBag"
+            android:label="@string/EditBag_string_title" >
+        </activity>
+        <activity
+            android:name="cz.spurny.Settings.Settings"
+            android:label="@string/Settings_string_title" >
+        </activity>
+        <activity
+            android:name=".SelectPlaymate"
+            android:label="@string/SelectPlaymate_string_title" >
+        </activity>
+        <activity
+            android:name="cz.spurny.Game.SelectHole"
+            android:label="@string/SelectHole_string_title" >
+        </activity>
+        <activity
+            android:name="cz.spurny.Game.GameOnHole"
+            android:label="@string/GameOnHole_string_title" >
+        </activity>
+        <activity
+            android:name="cz.spurny.Game.HoleScore"
+            android:label="@string/HoleScore_string_title" >
+        </activity>
+    </application>
+
+</manifest>

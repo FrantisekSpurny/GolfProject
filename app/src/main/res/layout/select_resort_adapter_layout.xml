@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/SelectResortAdapter_layout">
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text=""
+        android:id="@+id/SelectResortAdapter_textView_name"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text=""
+        android:id="@+id/SelectResortAdapter_textView_city"
+        android:layout_below="@+id/SelectResortAdapter_textView_name"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text=""
+        android:id="@+id/SelectResortAdapter_textView_street"
+        android:layout_alignTop="@+id/SelectResortAdapter_textView_city"
+        android:layout_toRightOf="@+id/SelectResortAdapter_textView_city"
+        android:layout_toEndOf="@+id/SelectResortAdapter_textView_city"
+        android:layout_marginLeft="5dp"
+        android:layout_marginStart="5dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text=""
+        android:id="@+id/SelectResortAdapter_textView_streetNum"
+        android:layout_alignBottom="@+id/SelectResortAdapter_textView_street"
+        android:layout_toRightOf="@+id/SelectResortAdapter_textView_street"
+        android:layout_toEndOf="@+id/SelectResortAdapter_textView_street"
+        android:layout_marginLeft="5dp"
+        android:layout_marginStart="5dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text=""
+        android:id="@+id/SelectResortAdapter_textView_arrea"
+        android:layout_below="@+id/SelectResortAdapter_textView_city"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+</RelativeLayout>

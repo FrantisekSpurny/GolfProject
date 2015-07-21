@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group>
+        <item android:id="@+id/GameOnHoleMenu_item_prevHole"
+            android:title="@string/GameOnHoleMenu_string_prevHole" />
+
+        <item android:id="@+id/GameOnHoleMenu_item_nextHole"
+            android:title="@string/GameOnHoleMenu_string_nextHole" />
+    </group>
+
+    <group>
+        <item android:id="@+id/GameOnHoleMenu_item_measuring"
+            android:title="@string/GameOnHoleMenu_string_measuring" />
+
+        <item android:id="@+id/GameOnHoleMenu_item_captureShot"
+            android:title="@string/GameOnHoleMenu_string_captureShot" />
+
+        <item android:id="@+id/GameOnHoleMenu_item_holeScore"
+            android:title="@string/GameOnHoleMenu_string_holeScore" />
+
+        <item android:id="@+id/GameOnHoleMenu_item_currentScore"
+            android:title="@string/GameOnHoleMenu_string_currentScore" />
+    </group>
+</menu>

@@ -1,0 +1,279 @@
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="cz.spurny.Game.HoleScore">
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/HoleScore_string_hole"
+            android:id="@+id/HoleScore_textView_holeTitle" />
+
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TabHost
+            android:id="@+id/HoleScore_tabHost_hole"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_span="2"
+            android:layout_weight="1" >
+
+            <HorizontalScrollView
+                android:id="@+id/HoleScore_horizontalScrollView_hole"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fillViewport="true"
+                android:scrollbars="none" >
+
+                <TabWidget
+                    android:id="@android:id/tabs"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </HorizontalScrollView>
+
+            <FrameLayout
+                android:id="@android:id/tabcontent"
+                android:layout_width="match_parent"
+                android:layout_height="0dp" >
+            </FrameLayout>
+        </TabHost>
+
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/HoleScore_string_player"
+            android:id="@+id/HoleScore_textView_playerTitle" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TabHost
+            android:id="@+id/HoleScore_tabHost_player"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_span="2"
+            android:layout_weight="1" >
+
+            <HorizontalScrollView
+                android:id="@+id/HoleScore_horizontalScrollView_player"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fillViewport="true"
+                android:scrollbars="none" >
+
+                <TabWidget
+                    android:id="@android:id/tabs"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </HorizontalScrollView>
+
+            <FrameLayout
+                android:id="@android:id/tabcontent"
+                android:layout_width="match_parent"
+                android:layout_height="0dp" >
+            </FrameLayout>
+        </TabHost>
+
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/HoleScore_string_score"
+            android:id="@+id/HoleScore_textView_scoreTitle" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TabHost
+            android:id="@+id/HoleScore_tabHost_score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_span="2"
+            android:layout_weight="1" >
+
+            <HorizontalScrollView
+                android:id="@+id/HoleScore_horizontalScrollView_score"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fillViewport="true"
+                android:scrollbars="none" >
+
+                <TabWidget
+                    android:id="@android:id/tabs"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </HorizontalScrollView>
+
+            <FrameLayout
+                android:id="@android:id/tabcontent"
+                android:layout_width="match_parent"
+                android:layout_height="0dp" >
+            </FrameLayout>
+        </TabHost>
+
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/HoleScore_string_put"
+            android:id="@+id/HoleScore_textView_putTitle" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TabHost
+            android:id="@+id/HoleScore_tabHost_put"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_span="2"
+            android:layout_weight="1" >
+
+            <HorizontalScrollView
+                android:id="@+id/HoleScore_horizontalScrollView_put"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fillViewport="true"
+                android:scrollbars="none" >
+
+                <TabWidget
+                    android:id="@android:id/tabs"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </HorizontalScrollView>
+
+            <FrameLayout
+                android:id="@android:id/tabcontent"
+                android:layout_width="match_parent"
+                android:layout_height="0dp" >
+            </FrameLayout>
+        </TabHost>
+
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/HoleScore_string_shots"
+            android:id="@+id/HoleScore_textView_shotsTitle" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TabHost
+            android:id="@+id/HoleScore_tabHost_shots"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_span="2"
+            android:layout_weight="1" >
+
+            <HorizontalScrollView
+                android:id="@+id/HoleScore_horizontalScrollView_shots"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fillViewport="true"
+                android:scrollbars="none" >
+
+                <TabWidget
+                    android:id="@android:id/tabs"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </HorizontalScrollView>
+
+            <FrameLayout
+                android:id="@android:id/tabcontent"
+                android:layout_width="match_parent"
+                android:layout_height="0dp" >
+            </FrameLayout>
+        </TabHost>
+
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/HoleScore_string_penaltyShots"
+            android:id="@+id/HoleScore_textView_penaltyShotsTitle" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TabHost
+            android:id="@+id/HoleScore_tabHost_penaltyShots"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_span="2"
+            android:layout_weight="1" >
+
+            <HorizontalScrollView
+                android:id="@+id/HoleScore_horizontalScrollView_penaltyShots"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fillViewport="true"
+                android:scrollbars="none" >
+
+                <TabWidget
+                    android:id="@android:id/tabs"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </HorizontalScrollView>
+
+            <FrameLayout
+                android:id="@android:id/tabcontent"
+                android:layout_width="match_parent"
+                android:layout_height="0dp" >
+            </FrameLayout>
+        </TabHost>
+
+    </TableRow>
+</TableLayout>
