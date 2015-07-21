@@ -1,17 +1,18 @@
 package cz.spurny.Calculations;
 
-import android.content.Context;
-import android.graphics.PointF;
-import android.view.Display;
-import android.view.WindowManager;
-import cz.spurny.DatabaseResort.Point;
-
 /**
  * Objekt: SingleTapDetector.java
  * Popis:  Detekce pokliknuti na displej.
  * Autor:  Frantisek Spurny
  * Datum:  20.07.2015
  */
+
+import android.content.Context;
+import android.graphics.PointF;
+import android.view.Display;
+import android.view.WindowManager;
+import cz.spurny.DatabaseResort.Point;
+
 public class SingleTapDetector {
 
     Point   downPoint;
@@ -60,9 +61,7 @@ public class SingleTapDetector {
     public boolean isTap() {
 
         /* Kontrola vzdálenosti */
-        if (DistanceCalculations.pointDistancePx(downPoint,upPoint) > threshold)
-            return false;
+        return DistanceCalculations.pointDistancePx(downPoint, upPoint) <= threshold;
 
-        return true;
     }
 }
