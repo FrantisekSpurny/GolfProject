@@ -7,7 +7,6 @@ package cz.spurny.CreateGame;
  * Datum:  18.6.2015
  **/
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;

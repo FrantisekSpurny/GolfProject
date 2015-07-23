@@ -60,7 +60,7 @@ public class SingleTapDetector {
     /** Zjisteni jestli se jedna o "tap" **/
     public boolean isTap() {
 
-        /* Kontrola vzdálenosti */
+        /* Kontrola vzdalenosti */
         return DistanceCalculations.pointDistancePx(downPoint, upPoint) <= threshold;
 
     }

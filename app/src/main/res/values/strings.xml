@@ -86,5 +86,10 @@
     <string name="HoleScore_string_put">Paty</string>
     <string name="HoleScore_string_shots">Rány</string>
     <string name="HoleScore_string_penaltyShots">Trestné rány</string>
+    <string name="HoleScore_string_saveScore">Ulož skóre</string>
+    <string name="HoleScoreHoleList_string_title">Zvolte jamku.</string>
+    <string name="HoleScorePlayerList_string_title">Zvolte hráče.</string>
+    <string name="SelectCourse_string_selectPlaymate">Výběr spoluhráčů</string>
+    <string name="ToManyPlaymates_string_toast">4 je maxilální počet hráčů</string>
 
 </resources>

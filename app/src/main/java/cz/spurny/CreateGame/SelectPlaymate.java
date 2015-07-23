@@ -40,6 +40,7 @@ import cz.spurny.Dialogs.AddPlayer;
 import cz.spurny.Game.SelectHole;
 import cz.spurny.Toasts.GameCreatedSuccessfully;
 import cz.spurny.Toasts.NotValidPlaymate;
+import cz.spurny.Toasts.ToManyPlaymates;
 
 public class SelectPlaymate extends ActionBarActivity {
 
@@ -240,6 +241,14 @@ public class SelectPlaymate extends ActionBarActivity {
             isPlaymateList.set(index,false);
         /* Tento hrac je novy spoluhrac */
         } else {
+
+            /* Je mozne zvolit maximalne 4 hrace */
+            if (numOfPlaymates(isPlaymateList) >= 3) { // 3 + hlavni profil
+                ToManyPlaymates.getToast(context).show();
+                return;
+            }
+
+
             listItem.setBackgroundColor(Color.parseColor("#A3E0FF"));
             isPlaymateList.set(index,true);
         }
@@ -288,12 +297,16 @@ public class SelectPlaymate extends ActionBarActivity {
         }
     }
 
-    /** Reakce na zmacknuti tlacitka "zpet" - navrat na predchozi aktivitu **/
-    @Override
-    public void onBackPressed()
-    {
-        Intent iSelectCourse = new Intent(this,SelectCourse.class);
-        this.startActivity(iSelectCourse);
+    /** Zjisti pocet hracu ktery jsou vybrani jako spoluhraci **/
+    public int numOfPlaymates (List<Boolean> list) {
+
+        int count = 0;
+        for (Boolean b : list) {
+            if (b) {
+                count++;
+            }
+        }
+        return count;
     }
 
     @Override

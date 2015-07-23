@@ -15,7 +15,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TabHost;
+import android.widget.TableRow;
 import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +29,9 @@ import cz.spurny.DatabaseInternal.Game;
 import cz.spurny.DatabaseInternal.Player;
 import cz.spurny.DatabaseResort.DatabaseHandlerResort;
 import cz.spurny.DatabaseResort.Hole;
+import cz.spurny.Dialogs.HoleScoreHoleList;
+import cz.spurny.Dialogs.HoleScorePlayerList;
+import cz.spurny.Dialogs.MeasureDrawPointSelectionMethod;
 import cz.spurny.Settings.UserPreferences;
 
 public class HoleScore extends ActionBarActivity {
@@ -46,12 +52,14 @@ public class HoleScore extends ActionBarActivity {
     int          actualPenaltyShots;
 
     /** Prvky GUI **/
-    TabHost  thHole;
-    TabHost  thPlayer;
     TabHost  thScore;
     TabHost  thPuts;
     TabHost  thShots;
     TabHost  thPenaltyShots;
+    TextView tvHole;
+    TextView tvPlayer;
+    TableRow trHole;
+    TableRow trPlayer;
 
     /** Databaze **/
     DatabaseHandlerInternal dbi;
@@ -72,8 +80,6 @@ public class HoleScore extends ActionBarActivity {
 
         /* Inicializace aktivity */
         init();
-
-
     }
 
     /** Tato aktivita neobsahuje menu **/
@@ -110,6 +116,11 @@ public class HoleScore extends ActionBarActivity {
         /* Inicializace "TabHost" polozek */
         initTabHosts();
 
+        /* Incializace "TextView" */
+        initTextView();
+
+        /* Rakce na poklinuti na radky tabulky jamka a hrac */
+        clickHandlerTableRow();
     }
 
     /** Prevzeti hodnot z volajici aktivity a ziskani kontextu **/
@@ -121,38 +132,39 @@ public class HoleScore extends ActionBarActivity {
         Intent iPrevActivity = getIntent();
         idGame          = iPrevActivity.getIntExtra("EXTRA_HOLE_SCORE_IDGAME", -1);
         idHole          = iPrevActivity.getIntExtra("EXTRA_HOLE_SCORE_IDHOLE", -1);
-        shotsCount      = iPrevActivity.getIntExtra("EXTRA_HOLE_SCORE_IDHOLE", -1);
+        shotsCount      = iPrevActivity.getIntExtra("EXTRA_HOLE_SCORE_NUM_OF_SHOTS", -1);
 
         /* Naplneni atributu */
         game                = dbi.getGame(idGame);
         actualHole          = dbr.getHole(idHole);
         holeList            = dbi.getAllHolesOfGame(idGame);
-        playerList          = dbi.getAllPlaymatesOfGame(idGame);
+        //playerList          = dbi.getAllPlaymatesOfGame(idGame);
         actualPlayer        = dbi.getPlayer((int) UserPreferences.getMainUserId(context));
         actualScore         = shotsCount+2;
         actualShots         = shotsCount;
         actualPuts          = 2;
         actualPenaltyShots  = 0;
+
+        /* Pridani hlavniho profilu mezi hrace */
+        playerList = new ArrayList<>();
+        playerList.add(0, dbi.getMainPlayer());
     }
 
     /** Pripojeni prvku GUI **/
     public void connectGui() {
-        thHole          = (TabHost) findViewById(R.id.HoleScore_tabHost_hole);
-        thPlayer        = (TabHost) findViewById(R.id.HoleScore_tabHost_player);
-        thScore         = (TabHost) findViewById(R.id.HoleScore_tabHost_score);
-        thPuts          = (TabHost) findViewById(R.id.HoleScore_tabHost_put);
-        thShots         = (TabHost) findViewById(R.id.HoleScore_tabHost_shots);
-        thPenaltyShots  = (TabHost) findViewById(R.id.HoleScore_tabHost_penaltyShots);
+
+        thScore         = (TabHost)  findViewById(R.id.HoleScore_tabHost_score);
+        thPuts          = (TabHost)  findViewById(R.id.HoleScore_tabHost_put);
+        thShots         = (TabHost)  findViewById(R.id.HoleScore_tabHost_shots);
+        thPenaltyShots  = (TabHost)  findViewById(R.id.HoleScore_tabHost_penaltyShots);
+        tvHole          = (TextView) findViewById(R.id.HoleScore_textView_hole);
+        tvPlayer        = (TextView) findViewById(R.id.HoleScore_textView_player);
+        trHole          = (TableRow) findViewById(R.id.HoleScore_tableRow_hole);
+        trPlayer        = (TableRow) findViewById(R.id.HoleScore_tableRow_player);
     }
 
     /** Inicializace a naplneni hodnotami polozek "TabHost" **/
     public void initTabHosts() {
-
-        /* Seznam jamek */
-        initTabHost(getHoleNamesList()  ,getHoleIdList()  ,thHole);
-
-        /* Seznam hracu */
-        initTabHost(getPlayerNamesList(),getPlayerIdList(),thPlayer);
 
         /* Skore */
         initTabHost(getScoreNamesList(18)  ,getNumberList(18)  ,thScore);
@@ -165,7 +177,6 @@ public class HoleScore extends ActionBarActivity {
 
         /* Trestne rany */
         initTabHost(getNumberList(5)     ,getNumberList(5)  ,thPenaltyShots);
-
     }
 
     /** Inicializace "TabHost" prvku **/
@@ -200,50 +211,6 @@ public class HoleScore extends ActionBarActivity {
         }
     }
 
-    /** Tvorba seznamu jmen jamek **/
-    public List<String> getHoleNamesList() {
-
-        List<String> nameList = new ArrayList<>();
-
-        for (Hole h:holeList)
-            nameList.add(h.getNumber() + ".");
-
-        return nameList;
-    }
-
-    /** Tvorba seznamu id jamek */
-    public List<String> getHoleIdList() {
-
-        List<String> idList = new ArrayList<>();
-
-        for (Hole h:holeList)
-            idList.add(String.valueOf(h.getId()));
-
-        return idList;
-    }
-
-    /** Tvorba seznamu jmen hracu **/
-    public List<String> getPlayerNamesList() {
-
-        List<String> nameList = new ArrayList<>();
-
-        for (Player p:playerList)
-            nameList.add(p.getNickname());
-
-        return nameList;
-    }
-
-    /** Tvorba seznamu id hracu **/
-    public List<String> getPlayerIdList() {
-
-        List<String> idList = new ArrayList<>();
-
-        for (Player p:playerList)
-            idList.add(String.valueOf(p.getId()));
-
-        return idList;
-    }
-
     /** Tvorba seznamu score **/
     public List<String> getScoreNamesList(int n) {
         List<String> scoreList = new ArrayList<>();
@@ -266,4 +233,37 @@ public class HoleScore extends ActionBarActivity {
         return numberList;
     }
 
+    /** Inicializace textovych poli vychozimi hodnotami **/
+    public void initTextView() {
+        tvHole  .setText(formatStringHole  (actualHole));
+        tvPlayer.setText(formatStringPlayer(actualPlayer));
+    }
+
+    /** Formatovani textu pro vypis jedne jamky **/
+    public String formatStringHole(Hole h) {
+        return h.number + ". (" + h.getName() + ")";
+    }
+
+    /** Formatovani textu pro vypis jednoho hrace **/
+    public String formatStringPlayer(Player p) {
+        return p.getNickname() + " (" + p.getName() + " " + p.getSurname() + ")";
+    }
+
+    /** Reakce na kliknuti na textova pole **/
+    public void clickHandlerTableRow() {
+
+        trHole.setOnClickListener(new android.view.View.OnClickListener() {
+            @Override
+            public void onClick(android.view.View v) {
+                HoleScoreHoleList.dialog(context,holeList).show();
+            }
+        });
+
+        trPlayer.setOnClickListener(new android.view.View.OnClickListener() {
+            @Override
+            public void onClick(android.view.View v) {
+                HoleScorePlayerList.dialog(context, playerList).show();
+            }
+        });
+    }
 }

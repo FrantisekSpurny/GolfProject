@@ -8,7 +8,8 @@
 
     <TableRow
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:id="@+id/HoleScore_tableRow_hole">
 
         <TextView
             android:layout_width="wrap_content"
@@ -17,44 +18,19 @@
             android:text="@string/HoleScore_string_hole"
             android:id="@+id/HoleScore_textView_holeTitle" />
 
-    </TableRow>
-
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <TabHost
-            android:id="@+id/HoleScore_tabHost_hole"
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_span="2"
-            android:layout_weight="1" >
-
-            <HorizontalScrollView
-                android:id="@+id/HoleScore_horizontalScrollView_hole"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fillViewport="true"
-                android:scrollbars="none" >
-
-                <TabWidget
-                    android:id="@android:id/tabs"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-            </HorizontalScrollView>
-
-            <FrameLayout
-                android:id="@android:id/tabcontent"
-                android:layout_width="match_parent"
-                android:layout_height="0dp" >
-            </FrameLayout>
-        </TabHost>
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text=""
+            android:id="@+id/HoleScore_textView_hole" />
 
     </TableRow>
 
     <TableRow
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:id="@+id/HoleScore_tableRow_player">
 
         <TextView
             android:layout_width="wrap_content"
@@ -62,39 +38,23 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="@string/HoleScore_string_player"
             android:id="@+id/HoleScore_textView_playerTitle" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text=""
+            android:id="@+id/HoleScore_textView_player" />
     </TableRow>
 
     <TableRow
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TabHost
-            android:id="@+id/HoleScore_tabHost_player"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_span="2"
-            android:layout_weight="1" >
-
-            <HorizontalScrollView
-                android:id="@+id/HoleScore_horizontalScrollView_player"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fillViewport="true"
-                android:scrollbars="none" >
-
-                <TabWidget
-                    android:id="@android:id/tabs"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-            </HorizontalScrollView>
-
-            <FrameLayout
-                android:id="@android:id/tabcontent"
-                android:layout_width="match_parent"
-                android:layout_height="0dp" >
-            </FrameLayout>
-        </TabHost>
-
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="20px"
+            android:layout_weight="1" />
     </TableRow>
 
     <TableRow
@@ -107,6 +67,7 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="@string/HoleScore_string_score"
             android:id="@+id/HoleScore_textView_scoreTitle" />
+
     </TableRow>
 
     <TableRow
@@ -276,4 +237,22 @@
         </TabHost>
 
     </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"></TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/HoleScore_string_saveScore"
+            android:id="@+id/HoleScore_button_saveScore"
+            android:layout_weight="1" />
+    </TableRow>
+
 </TableLayout>

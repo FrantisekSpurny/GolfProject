@@ -17,6 +17,8 @@ import cz.spurny.DatabaseInternal.DatabaseHandlerInternal;
 import cz.spurny.DatabaseResort.DatabaseHandlerResort;
 import cz.spurny.DatabaseResort.Point;
 import cz.spurny.DatabaseResort.View;
+import cz.spurny.GpsApi.GpsCoordinates;
+import cz.spurny.GpsApi.GpsMethods;
 import cz.spurny.Library.BitmapConversion;
 import cz.spurny.Library.TouchImageView;
 
@@ -31,6 +33,7 @@ public class MeasureDraw {
     /** Barvy **/
     private Paint linePaint;
     private Paint textPaint;
+    private Paint textPaintLarge;
 
     /** Atributy **/
     private Point                   actualPoint;
@@ -114,6 +117,13 @@ public class MeasureDraw {
             {
                 setColor(lineColor);
                 setTextSize(textSize);
+            }
+        };
+
+        textPaintLarge  = new Paint() {
+            {
+                setColor(lineColor);
+                setTextSize(textSize*2);
             }
         };
     }
@@ -261,7 +271,7 @@ public class MeasureDraw {
         drawMeasureDestinationPoint();
 
         /* Vykresleni linky spojujici body */
-
+        drawMeasureLine();
     }
 
     /** Vykresleni zdrojoveho bodu **/
@@ -279,7 +289,7 @@ public class MeasureDraw {
         dActualPoint.draw(canvas);
     }
 
-    /** Vykresleni zdrojoveho bodu **/
+    /** Vykresleni ciloveho bodu **/
     public void drawMeasureDestinationPoint () {
 
         /* Zobrazeni aktualni polohy */
@@ -292,6 +302,40 @@ public class MeasureDraw {
                 destinationPoint.getPixelY());
 
         dDestinationPoint.draw(canvas);
+    }
+
+    /** Vykresleni vzdalenosti mezi body **/
+    public void drawMeasureLine() {
+
+        /* Souradnice zvolenych bodu */
+        int x1 = actualPoint.getPixelX();
+        int y1 = actualPoint.getPixelY();
+        int x2 = destinationPoint.getPixelX();
+        int y2 = destinationPoint.getPixelY();
+        int x3,y3;
+
+        /* Linka */
+        canvas.drawLine(x1,y1,x2,y2,linePaint);
+
+        /* Text */
+        /* PX pozice */
+        if (x1 >= x2)
+            x3 = x2 +  Math.abs(x1-x2)/2 + lineBorderLeft;
+        else
+            x3 = x1 +  Math.abs(x1-x2)/2 + lineBorderLeft;
+
+        if (y1 > y2)
+            y3 = y2 + Math.abs(y1-y2)/2;
+        else
+            y3 = y1 + Math.abs(y1-y2)/2;
+
+        /* GPS pozice */
+        GpsCoordinates gps1 =  new GpsCoordinates(actualPoint.getLatitude(),actualPoint.getLongitude());
+        GpsCoordinates gps2 =  new GpsCoordinates(destinationPoint.getLatitude(),destinationPoint.getLongitude());
+        double distance = GpsMethods.getDistance(gps1,gps2);
+
+        /* vykresleni */
+        canvas.drawText(String.valueOf(distance)+"m",x3,y3,textPaintLarge);
     }
 
     /** Reinicializace bitmapy **/

@@ -195,7 +195,7 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/SelectCourse_string_CreateGame"
+            android:text="@string/SelectCourse_string_selectPlaymate"
             android:id="@+id/SelectCourse_button_CreateGame"
             android:layout_weight="1" />
     </TableRow>
