@@ -40,7 +40,7 @@ public class HoleScorePlayerList {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(context,android.R.layout.simple_list_item_1,playersArray);
         lvPlayers.setAdapter(adapter);
 
-        onListClickHandle(lvPlayers,dialog,context);
+        onListClickHandle(lvPlayers,dialog,context,players);
 
         return dialog;
     }
@@ -48,14 +48,16 @@ public class HoleScorePlayerList {
     /** Reakce na pokliknuti na polozku seznamu **/
     public static void onListClickHandle(final ListView lv,
                                          final Dialog dialog,
-                                         final Context context) {
+                                         final Context context,
+                                         final List<Player> players) {
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> arg0, android.view.View arg1, int arg2, long arg3) {
 
-                // TODO zmena jamky
+                ((HoleScore)context).setActualPlayer(players.get(arg2));
+                ((HoleScore)context).initTextView();
 
                 dialog.hide();
             }

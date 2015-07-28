@@ -65,7 +65,7 @@ public class AddPlayer {
 		/* tvorba dialogu pro tvorbu hole */
         dialog = new Dialog(activityContext);
         dialog.setContentView(R.layout.add_player_layout);
-        dialog.setTitle(activityContext.getString(R.string.AddClub_string_title));
+        dialog.setTitle(activityContext.getString(R.string.AddPlayer_string_title));
 
         context    = activityContext;
         adapter    = activityAdapter;

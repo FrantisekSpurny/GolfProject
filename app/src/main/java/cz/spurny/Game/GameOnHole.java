@@ -21,9 +21,11 @@ import android.widget.TextView;
 import java.util.List;
 
 import cz.spurny.Calculations.SingleTapDetector;
+import cz.spurny.Calculations.SwipeDetector;
 import cz.spurny.CreateGame.R;
 import cz.spurny.DatabaseInternal.DatabaseHandlerInternal;
 import cz.spurny.DatabaseInternal.Game;
+import cz.spurny.DatabaseInternal.Score;
 import cz.spurny.DatabaseResort.Course;
 import cz.spurny.DatabaseResort.DatabaseHandlerResort;
 import cz.spurny.DatabaseResort.Hole;
@@ -35,6 +37,7 @@ import cz.spurny.GpsApi.GpsCoordinates;
 import cz.spurny.GpsApi.GpsMethods;
 import cz.spurny.Library.BitmapConversion;
 import cz.spurny.Library.TouchImageView;
+import cz.spurny.Settings.UserPreferences;
 
 public class GameOnHole extends ActionBarActivity {
 
@@ -414,7 +417,7 @@ public class GameOnHole extends ActionBarActivity {
     /** Inicializace informacniho panelu se zakladnimi informacemi **/
     public void infoPanelBasic() {
 
-        showLastInfoPanelRow();
+        showLastPanelInfoRow();
 
         /* Cislo jamky */
         tvRow1.setText(context.getString(R.string.GameOnHole_string_holeNumber));
@@ -436,7 +439,7 @@ public class GameOnHole extends ActionBarActivity {
     /** Inicializace informacniho panelu pro mereni **/
     public void infoPanelMeasure() {
 
-        hideLastInfoPanelRow();
+        hideLastPanelInfoRow();
 
         /* Cislo jamky */
         tvRow1.setText(context.getString(R.string.GameOnHole_string_holeNumber));
@@ -461,22 +464,45 @@ public class GameOnHole extends ActionBarActivity {
         }
     }
 
-    /** Zobrazeni posleniho radku infopanelu **/
-    public void showLastInfoPanelRow() {
+    /** Zobrazeni info panelu skore jamky **/
+    public void infoPanelScore(Score score) {
+
+        showLastPanelInfoRow();
+
+        /* Cislo jamky */
+        tvRow1.setText(context.getString(R.string.GameOnHole_string_holeNumber));
+        tvRow2.setText(String.valueOf(hole.getNumber()));
+
+        /* Score */
+        tvRow3.setText(context.getString(R.string.GameOnHole_string_score));
+        tvRow4.setText(score.getScore()+"/"+score.getScore()); //TODO stable
+
+        /* Paty */
+        tvRow5.setText(context.getString(R.string.GameOnHole_string_puts));
+        tvRow6.setText(String.valueOf(score.getPuts()));
+
+        /* Trestne rany */
+        tvRow7.setText(context.getString(R.string.GameOnHole_string_penaltyShots));
+        tvRow8.setText(String.valueOf(score.getPenaltyShots()));
+    }
+
+
+    /** Zobrazeni radku 7,8 info panelu **/
+    public void showLastPanelInfoRow() {
         if (trRow7.getVisibility() != android.view.View.VISIBLE)
             trRow7.setVisibility(android.view.View.VISIBLE);
         if (trRow8.getVisibility() != android.view.View.VISIBLE)
             trRow8.setVisibility(android.view.View.VISIBLE);
     }
 
-    /** Skryti posleniho radku infopanelu **/
-    public void hideLastInfoPanelRow() {
+    /** Skryti radku 7,8 info panelu **/
+    public void hideLastPanelInfoRow() {
         if (trRow7.getVisibility() == android.view.View.VISIBLE)
             trRow7.setVisibility(android.view.View.GONE);
         if (trRow8.getVisibility() == android.view.View.VISIBLE)
             trRow8.setVisibility(android.view.View.GONE);
     }
-
+    
     /*** ZPRACOVANI DOTYKU ***/
 
     /** Reakce na zakladni gesta **/
@@ -492,6 +518,9 @@ public class GameOnHole extends ActionBarActivity {
                     case (MotionEvent.ACTION_UP):
                         singleTapDetector.setUpPoint((int) event.getX(), (int) event.getY());
                         handleScreenTouch(event);
+                        return true;
+                    case (MotionEvent.ACTION_MOVE):
+                        holeSwapper(event);
                         return true;
                 }
                 return true;
@@ -564,18 +593,38 @@ public class GameOnHole extends ActionBarActivity {
         return false;
     }
 
+    /** Rekce na tahly pohyb na obrazovce **/
+    public void holeSwapper(MotionEvent event) {
+
+        int swipe = SwipeDetector.isSwipe(context,
+                singleTapDetector.getDownX(),
+                singleTapDetector.getDownY(),
+                (int) event.getX(), (int) event.getY(),
+                singleTapDetector.getDisplayWidth(),
+                singleTapDetector.getDisplayHeight());
+
+        /* Presun jamky povolen pouze pokud neni priblizeno */
+        if (tivCourseImage.getCurrentZoom() == 1) {
+            if (swipe == SwipeDetector.LEFT_SWIPE)
+                prevHole();
+            else if (swipe == SwipeDetector.RIGHT_SWIPE)
+                nextHole();
+        }
+    }
+
     /*** SKORE JAMKY ***/
 
     /** Zakladni inicializace zadavani skore jamky **/
     public void holeScore() {
 
-        /** TODO prepnout kontext - vymazat bitmapu,zobrazeni infopanelu
-         *  to ovsem pouze pokud bylo jiz zadano skore **/
+        Score score = dbi.getScore(hole.getId(), UserPreferences.getMainUserId(context),game.getId());
 
-
+        /** Skore je jiz zadano **/
+        if (score != null)
+            displayHoleScore(score);
         /** Pokud nebylo skore jeste zadano **/
-        goToHoleScore();
-
+        else
+            goToHoleScore();
     }
 
     /** Spusteni aktivity - Skore jamky **/
@@ -585,6 +634,32 @@ public class GameOnHole extends ActionBarActivity {
         iHoleScore.putExtra("EXTRA_HOLE_SCORE_IDHOLE"      , hole.getId());
         iHoleScore.putExtra("EXTRA_HOLE_SCORE_NUM_OF_SHOTS", 2); //TODO vypocet poctu ran
         startActivity(iHoleScore);
+    }
+
+    /** Pripraveni aktivity na zobrazeni score infopanelu **/
+    public void displayHoleScore(Score score) {
+
+        /** Reinicializace bitmapy **/
+        reinitBitmap();
+
+        /** Zobrazeni infopanelu **/
+        infoPanelScore(score);
+    }
+
+    /*** POMOCNE METODY ***/
+
+    /** Prekresleni bitmapy **/
+    public void reinitBitmap() {
+
+        /* Nacteni puvodni bitmapy */
+        bitmap = BitmapConversion
+                .convertToMutable(BitmapFactory.decodeByteArray(view.getImage(), 0, view.getImage().length));
+
+        /* Obnoveni */
+        canvas.setBitmap(bitmap);
+        tivCourseImage.setImageBitmap(bitmap);
+        displayCurrentPosition();
+        tivCourseImage.invalidate();
     }
 
 }

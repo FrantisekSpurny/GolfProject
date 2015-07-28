@@ -15,7 +15,11 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 
+import java.io.IOException;
+import java.sql.SQLException;
+
 import cz.spurny.DatabaseInternal.DatabaseHandlerInternal;
+import cz.spurny.DatabaseResort.DatabaseHandlerResort;
 import cz.spurny.Dialogs.ApplicationTerminate;
 import cz.spurny.Player.CreatePlayer;
 import cz.spurny.Settings.Settings;
@@ -38,6 +42,28 @@ public class MainMenu extends ActionBarActivity {
 
         /* Pripojeni interni databaze */
         DatabaseHandlerInternal dbi = new DatabaseHandlerInternal(this);
+
+
+        DatabaseHandlerResort myDbHelper = new DatabaseHandlerResort(this);
+
+        if (myDbHelper.checkDataBase()) {
+            System.out.println("Databaze existuje");
+        } else {
+            System.out.println("Databaze neexistuje");
+        }
+
+        try {
+            myDbHelper.createDataBase("/mnt/sdcard/golfStatDatabaseResort");
+        } catch (IOException ioe) {
+
+        }
+
+        try {
+            myDbHelper.openDataBase();
+        }catch(SQLException sqle){
+
+        }
+
 
         /* Prvni zapnuti aplikace */
         if (dbi.getMainPlayer() == null ) { firstStartOfApplication(); }

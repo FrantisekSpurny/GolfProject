@@ -19,6 +19,8 @@ public class SingleTapDetector {
     Point   upPoint;
     int     threshold;
     Context context;
+    int displayWidth;
+    int displayHeight;
 
     /** Konstruktor **/
     public SingleTapDetector(double thresholdRatio,Context context) {
@@ -30,6 +32,9 @@ public class SingleTapDetector {
         /* Tvorba objektu bodu */
         downPoint = new Point();
         upPoint   = new Point();
+
+        displayWidth  = (int)(getDisplayDimensions().x);
+        displayHeight = (int)(getDisplayDimensions().y);
     }
 
     /** Zjisteni rozmeru dipleje **/
@@ -57,11 +62,31 @@ public class SingleTapDetector {
         downPoint.setPixelY(y);
     }
 
+    /** Ziskani souradnici x bodu stlaceni dispeje **/
+    public int getDownX() {
+        return downPoint.pixelX;
+    }
+
+    /** Ziskani souradnici y bodu stlaceni dispeje **/
+    public int getDownY() {
+        return downPoint.pixelY;
+    }
+
     /** Zjisteni jestli se jedna o "tap" **/
     public boolean isTap() {
 
         /* Kontrola vzdalenosti */
         return DistanceCalculations.pointDistancePx(downPoint, upPoint) <= threshold;
 
+    }
+
+    /** Sirka displeje **/
+    public int getDisplayWidth() {
+        return displayWidth;
+    }
+
+    /** Vyska displeje **/
+    public int getDisplayHeight() {
+        return displayHeight;
     }
 }

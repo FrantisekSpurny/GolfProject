@@ -91,5 +91,15 @@
     <string name="HoleScorePlayerList_string_title">Zvolte hráče.</string>
     <string name="SelectCourse_string_selectPlaymate">Výběr spoluhráčů</string>
     <string name="ToManyPlaymates_string_toast">4 je maxilální počet hráčů</string>
+    <string name="AddPlayer_string_title">Tvorba hráče.</string>
+    <string name="UpdateScore_string_title">Opravdu chcete uložit upravené skóre?</string>
+    <string name="ScoreSaved_string_toast">Skóre úspěšně uloženo.</string>
+    <string name="ScoreUpdated_string_toast">Skóre úspěšně aktualizováno.</string>
+    <string name="ScoreNotSaved_string_title">Skóre jamky nebylo uloženo!</string>
+    <string name="ScoreNotSaved_string_save">Uložit</string>
+    <string name="ScoreNotSaved_string_noSave">Neukládat</string>
+    <string name="GameOnHole_string_score">Skóre / Stable</string>
+    <string name="GameOnHole_string_puts">Paty</string>
+    <string name="GameOnHole_string_penaltyShots">Trestné rány</string>
 
 </resources>
