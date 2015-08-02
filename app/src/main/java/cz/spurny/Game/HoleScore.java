@@ -154,15 +154,11 @@ public class HoleScore extends ActionBarActivity {
         game                = dbi.getGame(idGame);
         actualHole          = dbr.getHole(idHole);
         holeList            = dbi.getAllHolesOfGame(idGame);
-        //playerList          = dbi.getAllPlaymatesOfGame(idGame);
+        playerList          = dbi.getAllPlaymatesOfGame(idGame);
         actualPlayer        = dbi.getPlayer((int) UserPreferences.getMainUserId(context));
         actualScore         = shotsCount+2;
         actualPuts          = 2;
         actualPenaltyShots  = 0;
-
-        /* Pridani hlavniho profilu mezi hrace */
-        playerList = new ArrayList<>();
-        playerList.add(0, dbi.getMainPlayer());
     }
 
     /** Pripojeni prvku GUI **/
@@ -398,7 +394,6 @@ public class HoleScore extends ActionBarActivity {
 
             /* Informovani uzivatele o ulozeni skore */
             ScoreSaved.getToast(context).show();
-            this.finish();
         }
     }
 

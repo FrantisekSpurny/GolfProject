@@ -26,7 +26,8 @@ public class Shot {
     private int     toAreaType;
     private double  distance;
     private double  deviation;
-    private String  specification;
+    private int     ballPosition;
+    private int     specification;
 
     public Shot() {
     }
@@ -47,7 +48,8 @@ public class Shot {
                 int toAreaType,
                 double distance,
                 double deviation,
-                String specification) {
+                int ballPosition,
+                int specification) {
 
         this.gameId = gameId;
         this.holeId = holeId;
@@ -65,6 +67,7 @@ public class Shot {
         this.toAreaType = toAreaType;
         this.distance = distance;
         this.deviation = deviation;
+        this.ballPosition = ballPosition;
         this.specification = specification;
     }
 
@@ -85,7 +88,8 @@ public class Shot {
                 int toAreaType,
                 double distance,
                 double deviation,
-                String specification) {
+                int ballPosition,
+                int specification) {
 
         this.id = id;
         this.gameId = gameId;
@@ -104,6 +108,7 @@ public class Shot {
         this.toAreaType = toAreaType;
         this.distance = distance;
         this.deviation = deviation;
+        this.ballPosition = ballPosition;
         this.specification = specification;
     }
 
@@ -243,11 +248,19 @@ public class Shot {
         this.deviation = deviation;
     }
 
-    public String getSpecification() {
+    public int getBallPosition() {
+        return ballPosition;
+    }
+
+    public void setBallPosition(int ballPosition) {
+        this.ballPosition = ballPosition;
+    }
+
+    public int getSpecification() {
         return specification;
     }
 
-    public void setSpecification(String specification) {
+    public void setSpecification(int specification) {
         this.specification = specification;
     }
 }

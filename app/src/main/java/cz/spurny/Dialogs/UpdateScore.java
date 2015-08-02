@@ -33,7 +33,6 @@ public class UpdateScore {
                             public void onClick(DialogInterface dialog, int id) {
                                 dbi.updateScore(score);
                                 ScoreUpdated.getToast(context).show();
-                                ((Activity)context).finish();
                             }
                         })
 

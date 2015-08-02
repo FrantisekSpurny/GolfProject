@@ -101,5 +101,34 @@
     <string name="GameOnHole_string_score">Skóre / Stable</string>
     <string name="GameOnHole_string_puts">Paty</string>
     <string name="GameOnHole_string_penaltyShots">Trestné rány</string>
+    <string name="SelectHoleAdapter_string_hcp">Hcp:</string>
+    <string name="SelectHoleAdapter_string_noScore">nezahráno</string>
+    <string name="SelectHoleAdapter_string_hasScore">zahráno</string>
+    <string name="GameOnHole_string_shotNumber">Rána číslo</string>
+    <string name="GameOnHole_string_club">Hůl</string>
+    <string name="GameOnHole_string_ballArea">Poloha míče</string>
+    <string name="GameOnHole_string_shotSpecification">Specifikace</string>
+    <string name="AreaType_string_fairway">Fervej</string>
+    <string name="AreaType_string_semirough">Semiraf</string>
+    <string name="AreaType_string_rough">Raf</string>
+    <string name="AreaType_string_bunker">Bunker</string>
+    <string name="AreaType_string_green">Green</string>
+    <string name="AreaType_string_water">Voda</string>
+    <string name="AreaType_string_biozone">Biozóna</string>
+    <string name="AreaType_string_out">Out</string>
+    <string name="ShotSpecification_string_straight">Rovná</string>
+    <string name="ShotSpecification_string_slajz">SLajz</string>
+    <string name="ShotSpecification_string_hook">Hook</string>
+    <string name="ShotSpecification_string_topla">Topla</string>
+    <string name="ShotSpecification_string_fat">Tlustá</string>
+    <string name="ShotSpecification_string_spike">Spike</string>
+    <string name="ShotSpecification_string_heel">Patou</string>
+    <string name="ShotSpecification_string_save">Záchraná</string>
+    <string name="BallPosition_string_ok">Ok</string>
+    <string name="BallPosition_string_dropFree">Drop volný</string>
+    <string name="BallPosition_string_dropPenalty">Drop s trestnou</string>
+    <string name="BallPosition_string_newPenalty">Nová s trestnou</string>
+    <string name="BallPosition_string_lostBall">Ztracený míč</string>
+    <string name="SelectClub_string_title">Výběr hole</string>
 
 </resources>

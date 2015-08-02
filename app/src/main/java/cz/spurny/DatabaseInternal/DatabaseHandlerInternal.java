@@ -107,6 +107,7 @@ public class DatabaseHandlerInternal extends SQLiteOpenHelper{
     private static final String KEY_TO_AREA_TYPE            = "to_area_type";
     private static final String KEY_DISTANCE                = "distance";
     private static final String KEY_DEVIATION               = "deviation";
+    private static final String KEY_BALL_POSITION           = "ball_position";
     private static final String KEY_SPECIFICATION           = "specification";
 
     /** Prikazy pro tvorbu tabulek **/
@@ -162,7 +163,7 @@ public class DatabaseHandlerInternal extends SQLiteOpenHelper{
             + KEY_PENALTY_SHOTS                 + " INTEGER" + ")";
 
     /* Tabulka RANA */
-    private static final String VYTVOR_TABULKU_RANA = "CREATE TABLE " + TABLE_SHOT
+    private static final String CREATE_TABLE_SHOT = "CREATE TABLE " + TABLE_SHOT
             + "(" + PRIMARY_KEY_SHOT            + " INTEGER PRIMARY KEY,"
             + FOREIGN_KEY_GAME                  + " INTEGER,"
             + FOREIGN_KEY_HOLE                  + " INTEGER,"
@@ -180,7 +181,8 @@ public class DatabaseHandlerInternal extends SQLiteOpenHelper{
             + KEY_TO_AREA_TYPE                  + " INTEGER,"
             + KEY_DISTANCE                      + " REAL,"
             + KEY_DEVIATION                     + " REAL,"
-            + KEY_SPECIFICATION                 + " TEXT" + ")";
+            + KEY_BALL_POSITION                 + " INTEGER,"
+            + KEY_SPECIFICATION                 + " INTEGER" + ")";
 
     /** Tvorba databaze **/
 
@@ -199,6 +201,7 @@ public class DatabaseHandlerInternal extends SQLiteOpenHelper{
         db.execSQL(CREATE_TABLE_PLAYER);
         db.execSQL(CREATE_TABLE_CLUB);
         db.execSQL(CREATE_TABLE_SCORE);
+        db.execSQL(CREATE_TABLE_SHOT);
     }
 
     @Override
@@ -211,6 +214,7 @@ public class DatabaseHandlerInternal extends SQLiteOpenHelper{
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_PLAYER);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_CLUB);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_SCORE);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_SHOT);
 
 		/* Vytvoreni tabulek nove verze */
         onCreate(db);
@@ -403,8 +407,12 @@ public class DatabaseHandlerInternal extends SQLiteOpenHelper{
         List<Player> players         =  new ArrayList<>();
         List<GamePlayer> gamePlayers =  getAllGamePlayerOfGame(idGame);
 
-        for (int i=0;i<gamePlayers.size();i++) {
-            players.add(getPlayer(gamePlayers.get(i).getIdPlayer()));
+        players.add(getMainPlayer());
+
+        if (gamePlayers != null) {
+            for (int i = 0; i < gamePlayers.size(); i++) {
+                players.add(getPlayer(gamePlayers.get(i).getIdPlayer()));
+            }
         }
 
         return players;
@@ -581,7 +589,6 @@ public class DatabaseHandlerInternal extends SQLiteOpenHelper{
         return club;
     }
 
-
     /* Ziskani vsech polozek tabulky hole */
     public List<Club> getAllClubs() {
         List<Club> clubs = new ArrayList<>();
@@ -752,6 +759,7 @@ public class DatabaseHandlerInternal extends SQLiteOpenHelper{
         values.put(KEY_TO_AREA_TYPE,    shot.getToAreaType());
         values.put(KEY_DISTANCE,        shot.getDistance());
         values.put(KEY_DEVIATION,       shot.getDeviation());
+        values.put(KEY_BALL_POSITION,   shot.getBallPosition());
         values.put(KEY_SPECIFICATION,   shot.getSpecification());
 
 		/* vlozeni radku do tabulky */
@@ -774,7 +782,7 @@ public class DatabaseHandlerInternal extends SQLiteOpenHelper{
             c.moveToFirst();
 
         Shot shot = new Shot();
-        shot.setId              (c.getInt(c.getColumnIndex(PRIMARY_KEY_SHOT)));
+        shot.setId              (c.getInt   (c.getColumnIndex(PRIMARY_KEY_SHOT)));
         shot.setGameId          (c.getInt   (c.getColumnIndex(FOREIGN_KEY_GAME)));
         shot.setHoleId          (c.getInt   (c.getColumnIndex(FOREIGN_KEY_HOLE)));
         shot.setClubId          (c.getInt   (c.getColumnIndex(FOREIGN_KEY_CLUB)));
@@ -790,7 +798,8 @@ public class DatabaseHandlerInternal extends SQLiteOpenHelper{
         shot.setToAreaType      (c.getInt   (c.getColumnIndex(KEY_TO_AREA_TYPE)));
         shot.setDistance        (c.getDouble(c.getColumnIndex(KEY_DISTANCE)));
         shot.setDeviation       (c.getDouble(c.getColumnIndex(KEY_DEVIATION)));
-        shot.setSpecification   (c.getString(c.getColumnIndex(KEY_SPECIFICATION)));
+        shot.setBallPosition    (c.getInt   (c.getColumnIndex(KEY_BALL_POSITION)));
+        shot.setSpecification   (c.getInt   (c.getColumnIndex(KEY_SPECIFICATION)));
 
         return shot;
     }
@@ -826,7 +835,8 @@ public class DatabaseHandlerInternal extends SQLiteOpenHelper{
                 shot.setToAreaType      (c.getInt   (c.getColumnIndex(KEY_TO_AREA_TYPE)));
                 shot.setDistance        (c.getDouble(c.getColumnIndex(KEY_DISTANCE)));
                 shot.setDeviation       (c.getDouble(c.getColumnIndex(KEY_DEVIATION)));
-                shot.setSpecification   (c.getString(c.getColumnIndex(KEY_SPECIFICATION)));
+                shot.setBallPosition    (c.getInt   (c.getColumnIndex(KEY_BALL_POSITION)));
+                shot.setSpecification   (c.getInt   (c.getColumnIndex(KEY_SPECIFICATION)));
 
 	            /* vlozeni objektu do seznamu */
                 shots.add(shot);
@@ -868,7 +878,8 @@ public class DatabaseHandlerInternal extends SQLiteOpenHelper{
                 shot.setToAreaType      (c.getInt   (c.getColumnIndex(KEY_TO_AREA_TYPE)));
                 shot.setDistance        (c.getDouble(c.getColumnIndex(KEY_DISTANCE)));
                 shot.setDeviation       (c.getDouble(c.getColumnIndex(KEY_DEVIATION)));
-                shot.setSpecification   (c.getString(c.getColumnIndex(KEY_SPECIFICATION)));
+                shot.setBallPosition    (c.getInt   (c.getColumnIndex(KEY_BALL_POSITION)));
+                shot.setSpecification   (c.getInt   (c.getColumnIndex(KEY_SPECIFICATION)));
 
 	            /* vlozeni objektu do seznamu */
                 shots.add(shot);
@@ -910,7 +921,8 @@ public class DatabaseHandlerInternal extends SQLiteOpenHelper{
                 shot.setToAreaType      (c.getInt   (c.getColumnIndex(KEY_TO_AREA_TYPE)));
                 shot.setDistance        (c.getDouble(c.getColumnIndex(KEY_DISTANCE)));
                 shot.setDeviation       (c.getDouble(c.getColumnIndex(KEY_DEVIATION)));
-                shot.setSpecification   (c.getString(c.getColumnIndex(KEY_SPECIFICATION)));
+                shot.setBallPosition    (c.getInt   (c.getColumnIndex(KEY_BALL_POSITION)));
+                shot.setSpecification   (c.getInt   (c.getColumnIndex(KEY_SPECIFICATION)));
 
 	            /* vlozeni objektu do seznamu */
                 shots.add(shot);
@@ -918,6 +930,16 @@ public class DatabaseHandlerInternal extends SQLiteOpenHelper{
         }
 
         return shots;
+    }
+
+    /** Ziskani poctu zahranych ran na jamce **/
+    public int getNumberOfShots(int idHole,int idGame) {
+        List<Shot> shots = getAllShots(idHole,idGame);
+
+        if (shots == null)
+            return 0;
+        else
+            return shots.size();
     }
 
     /* upraveni polozky tabulky Rana */
@@ -941,6 +963,7 @@ public class DatabaseHandlerInternal extends SQLiteOpenHelper{
         values.put(KEY_TO_AREA_TYPE,    shot.getToAreaType());
         values.put(KEY_DISTANCE,        shot.getDistance());
         values.put(KEY_DEVIATION,       shot.getDeviation());
+        values.put(KEY_BALL_POSITION,   shot.getBallPosition());
         values.put(KEY_SPECIFICATION,   shot.getSpecification());
 
 	    /* aktualizace radku tabulky hra */

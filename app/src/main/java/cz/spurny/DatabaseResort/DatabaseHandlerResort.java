@@ -820,6 +820,72 @@ public class DatabaseHandlerResort extends SQLiteOpenHelper {
         return point;
     }
 
+    /* Ziskani jedne polozky tabulky Bod */
+    public Point getPointNbDrive(long idHole) {
+
+        long idView = getAllViewsOfHole((int)idHole).get(0).getId();
+
+        String selectQuery = "SELECT  * FROM " + TABLE_POINT + " WHERE "
+                + FOREIGN_KEY_VIEW + " = " + idView
+                + " AND " + KEY_TYPE + " = " + "\"NBD\"" ;
+
+        /* Ziskani databaze pro cteni */
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        if (c != null)
+            c.moveToFirst();
+
+        Point point = new Point();
+        point.setId       (c.getInt   (c.getColumnIndex(PRIMARY_KEY_POINT)));
+        point.setIdView   (c.getInt   (c.getColumnIndex(FOREIGN_KEY_VIEW)));
+        point.setType     (c.getString(c.getColumnIndex(KEY_TYPE)));
+        point.setName     (c.getString(c.getColumnIndex(KEY_NAME)));
+        point.setPixelX   (c.getInt   (c.getColumnIndex(KEY_PIXEL_X)));
+        point.setPixelY   (c.getInt   (c.getColumnIndex(KEY_PIXEL_Y)));
+        point.setLatitude (c.getDouble(c.getColumnIndex(KEY_LATITUDE)));
+        point.setLongitude(c.getDouble(c.getColumnIndex(KEY_LONGITUDE)));
+        point.setElevation(c.getDouble(c.getColumnIndex(KEY_ELEVATION)));
+
+        /* uvolneni kurzoru */
+        c.close();
+
+        return point;
+    }
+
+    /* Ziskani jedne polozky tabulky Bod */
+    public Point getPointNb100(long idHole) {
+
+        long idView = getAllViewsOfHole((int)idHole).get(0).getId();
+
+        String selectQuery = "SELECT  * FROM " + TABLE_POINT + " WHERE "
+                + FOREIGN_KEY_VIEW + " = " + idView
+                + " AND " + KEY_TYPE + " = " + "\"NB100\"" ;
+
+        /* Ziskani databaze pro cteni */
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        if (c != null)
+            c.moveToFirst();
+
+        Point point = new Point();
+        point.setId       (c.getInt   (c.getColumnIndex(PRIMARY_KEY_POINT)));
+        point.setIdView   (c.getInt   (c.getColumnIndex(FOREIGN_KEY_VIEW)));
+        point.setType     (c.getString(c.getColumnIndex(KEY_TYPE)));
+        point.setName     (c.getString(c.getColumnIndex(KEY_NAME)));
+        point.setPixelX   (c.getInt   (c.getColumnIndex(KEY_PIXEL_X)));
+        point.setPixelY   (c.getInt   (c.getColumnIndex(KEY_PIXEL_Y)));
+        point.setLatitude (c.getDouble(c.getColumnIndex(KEY_LATITUDE)));
+        point.setLongitude(c.getDouble(c.getColumnIndex(KEY_LONGITUDE)));
+        point.setElevation(c.getDouble(c.getColumnIndex(KEY_ELEVATION)));
+
+        /* uvolneni kurzoru */
+        c.close();
+
+        return point;
+    }
+
     /* Ziskani bodu na kterem se nachazi dane odpaliste */
     public Point getTeePoint(long idHole,String teeName) {
 

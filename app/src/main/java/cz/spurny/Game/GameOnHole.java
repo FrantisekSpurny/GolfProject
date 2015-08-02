@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
@@ -26,6 +27,7 @@ import cz.spurny.CreateGame.R;
 import cz.spurny.DatabaseInternal.DatabaseHandlerInternal;
 import cz.spurny.DatabaseInternal.Game;
 import cz.spurny.DatabaseInternal.Score;
+import cz.spurny.DatabaseInternal.Shot;
 import cz.spurny.DatabaseResort.Course;
 import cz.spurny.DatabaseResort.DatabaseHandlerResort;
 import cz.spurny.DatabaseResort.Hole;
@@ -33,6 +35,8 @@ import cz.spurny.DatabaseResort.Point;
 import cz.spurny.DatabaseResort.Tee;
 import cz.spurny.DatabaseResort.View;
 import cz.spurny.Dialogs.MeasureDrawPointSelectionMethod;
+import cz.spurny.Dialogs.SelectBallPosition;
+import cz.spurny.Dialogs.SelectClub;
 import cz.spurny.GpsApi.GpsCoordinates;
 import cz.spurny.GpsApi.GpsMethods;
 import cz.spurny.Library.BitmapConversion;
@@ -40,6 +44,16 @@ import cz.spurny.Library.TouchImageView;
 import cz.spurny.Settings.UserPreferences;
 
 public class GameOnHole extends ActionBarActivity {
+
+    /** Aktualne zobrazeny info panel **/
+    int actualInfoPanel;
+
+    /** Konstanty urcujici info panel **/
+    final int INFO_PANEL_BASIC        = 0;
+    final int INFO_PANEL_MEASURE      = 1;
+    final int INFO_PANEL_SCORE        = 2;
+    final int INFO_PANEL_CAPTURE_SHOT = 3;
+
 
     /** GPS souradnice okraju zobrazeni **/
     GpsCoordinates gpsTopLeft;
@@ -61,13 +75,14 @@ public class GameOnHole extends ActionBarActivity {
     Bitmap bitmap;
 
     /** Objekty pro vykreslovani jednotlivych cinosti **/
-    MeasureDraw measureDraw = null; // vykreslovani mereni
+    MeasureDraw     measureDraw     = null; // vykreslovani mereni
+    ShotCaptureDraw shotCaptureDraw = null; // vykreslovani zadavani ran
 
     /** Pole obsahujici vzdalenosti jednotlivych jamek a pozice aktualni jamky **/
     double[] holeLengthArray;
     int      holeIndex;
 
-    /** Atributy hra,jamka,hriste,odpaliste,zobrazeni,body **/
+    /** Atributy hra,jamka,hriste,odpaliste,zobrazeni,body,aktualni rana **/
     private Game        game;
     private Hole        hole;
     private Course      course;
@@ -83,9 +98,12 @@ public class GameOnHole extends ActionBarActivity {
     private DatabaseHandlerInternal dbi;
 
     /** Prvky GUI **/
+    private TableLayout tlInfoPanel;
     private TouchImageView tivCourseImage;
     private TextView tvRow1,tvRow2,tvRow3,tvRow4,tvRow5,tvRow6,tvRow7,tvRow8;
+    private TextView tvRow9,tvRow10,tvRow11,tvRow12;
     private TableRow trRow1,trRow2,trRow3,trRow4,trRow5,trRow6,trRow7,trRow8;
+    private TableRow trRow9,trRow10,trRow11,trRow12;
 
     /** Max zoom na "TouchImageView" **/
     float maxZoom = 2;
@@ -178,11 +196,12 @@ public class GameOnHole extends ActionBarActivity {
      *  - cilovy bod:   stred greenu **/
     public void initPoints() {
         actualPoint      = dbr.getTeePoint(hole.getId(), tee.getKind());
-        destinationPoint = null; // nedefinovany
+        destinationPoint = null; // nedefinovano
     }
 
     /** Pripojeni vsech prvku GUI **/
     public void connectGui() {
+        tlInfoPanel    = (TableLayout)    findViewById(R.id.GameOnHole_tableLayout_infoPanel);
         tivCourseImage = (TouchImageView) findViewById(R.id.GameOnHole_touchImageView_courseImage);
         tvRow1         = (TextView)       findViewById(R.id.GameOnHole_textView_row1);
         tvRow2         = (TextView)       findViewById(R.id.GameOnHole_textView_row2);
@@ -192,6 +211,10 @@ public class GameOnHole extends ActionBarActivity {
         tvRow6         = (TextView)       findViewById(R.id.GameOnHole_textView_row6);
         tvRow7         = (TextView)       findViewById(R.id.GameOnHole_textView_row7);
         tvRow8         = (TextView)       findViewById(R.id.GameOnHole_textView_row8);
+        tvRow9         = (TextView)       findViewById(R.id.GameOnHole_textView_row9);
+        tvRow10        = (TextView)       findViewById(R.id.GameOnHole_textView_row10);
+        tvRow11        = (TextView)       findViewById(R.id.GameOnHole_textView_row11);
+        tvRow12        = (TextView)       findViewById(R.id.GameOnHole_textView_row12);
         trRow1         = (TableRow)       findViewById(R.id.GameOnHole_tableRow_row1);
         trRow2         = (TableRow)       findViewById(R.id.GameOnHole_tableRow_row2);
         trRow3         = (TableRow)       findViewById(R.id.GameOnHole_tableRow_row3);
@@ -200,6 +223,10 @@ public class GameOnHole extends ActionBarActivity {
         trRow6         = (TableRow)       findViewById(R.id.GameOnHole_tableRow_row6);
         trRow7         = (TableRow)       findViewById(R.id.GameOnHole_tableRow_row7);
         trRow8         = (TableRow)       findViewById(R.id.GameOnHole_tableRow_row8);
+        trRow9         = (TableRow)       findViewById(R.id.GameOnHole_tableRow_row9);
+        trRow10        = (TableRow)       findViewById(R.id.GameOnHole_tableRow_row10);
+        trRow11        = (TableRow)       findViewById(R.id.GameOnHole_tableRow_row11);
+        trRow12        = (TableRow)       findViewById(R.id.GameOnHole_tableRow_row12);
     }
 
     /** Prevzeti hodnot z predchozi aktivity **/
@@ -214,8 +241,8 @@ public class GameOnHole extends ActionBarActivity {
         holeLengthArray = iPrevActivity.getDoubleArrayExtra("EXTRA_GAME_ON_HOLE_LENGHT_ARRAY");
         holeIndex       = iPrevActivity.getIntExtra("EXTRA_GAME_ON_HOLE_INDEX", -1);
 
-        game   = dbi.getGame(idGame);
-        hole   = dbr.getHole(idHole);
+        game = dbi.getGame(idGame);
+        hole = dbr.getHole(idHole);
         course = dbr.getCourseWithHole(idHole);
         tee    = dbr.getTeeOfGameOnCourse((int) idGame, course.getId());
         view   = dbr.getAllViewsOfHole((int)idHole).get(0); //TODO
@@ -305,17 +332,15 @@ public class GameOnHole extends ActionBarActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
-            case R.id.GameOnHoleMenu_item_prevHole:  //predchozi jamka
-                prevHole();
-                return true;
-            case R.id.GameOnHoleMenu_item_nextHole:  //nasledujici jamka
-                nextHole();
-                return true;
             case R.id.GameOnHoleMenu_item_measuring: // mereni
                 measuring();
                 return true;
             case R.id.GameOnHoleMenu_item_holeScore: //score jamky
                 holeScore();
+                return true;
+            case R.id.GameOnHoleMenu_item_captureShot: // zaznam rany
+                captureShot();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -398,7 +423,8 @@ public class GameOnHole extends ActionBarActivity {
         trRow4.setOnClickListener(new android.view.View.OnClickListener() {
             @Override
             public void onClick(android.view.View v) {
-                MeasureDrawPointSelectionMethod.dialog(context, measureDraw, true, view).show();
+                if (actualInfoPanel == INFO_PANEL_MEASURE)
+                    MeasureDrawPointSelectionMethod.dialog(context, measureDraw, true, view).show();
             }
         });
 
@@ -406,7 +432,8 @@ public class GameOnHole extends ActionBarActivity {
         trRow6.setOnClickListener(new android.view.View.OnClickListener() {
             @Override
             public void onClick(android.view.View v) {
-                MeasureDrawPointSelectionMethod.dialog(context, measureDraw, false, view).show();
+                if (actualInfoPanel == INFO_PANEL_MEASURE)
+                    MeasureDrawPointSelectionMethod.dialog(context, measureDraw, false, view).show();
             }
         });
 
@@ -417,7 +444,10 @@ public class GameOnHole extends ActionBarActivity {
     /** Inicializace informacniho panelu se zakladnimi informacemi **/
     public void infoPanelBasic() {
 
+        actualInfoPanel = INFO_PANEL_BASIC;
+
         showLastPanelInfoRow();
+        hideCaptureShotInfoPanel();
 
         /* Cislo jamky */
         tvRow1.setText(context.getString(R.string.GameOnHole_string_holeNumber));
@@ -439,7 +469,10 @@ public class GameOnHole extends ActionBarActivity {
     /** Inicializace informacniho panelu pro mereni **/
     public void infoPanelMeasure() {
 
+        actualInfoPanel = INFO_PANEL_MEASURE;
+
         hideLastPanelInfoRow();
+        hideCaptureShotInfoPanel();
 
         /* Cislo jamky */
         tvRow1.setText(context.getString(R.string.GameOnHole_string_holeNumber));
@@ -467,7 +500,10 @@ public class GameOnHole extends ActionBarActivity {
     /** Zobrazeni info panelu skore jamky **/
     public void infoPanelScore(Score score) {
 
+        actualInfoPanel = INFO_PANEL_SCORE;
+
         showLastPanelInfoRow();
+        hideCaptureShotInfoPanel();
 
         /* Cislo jamky */
         tvRow1.setText(context.getString(R.string.GameOnHole_string_holeNumber));
@@ -486,6 +522,44 @@ public class GameOnHole extends ActionBarActivity {
         tvRow8.setText(String.valueOf(score.getPenaltyShots()));
     }
 
+    /** Zobrazeni informacniho panelu pro zadavani rany **/
+    public void infoPanelCaptureShot() {
+
+        actualInfoPanel = INFO_PANEL_CAPTURE_SHOT;
+
+        showLastPanelInfoRow();
+        showCaptureShotInfoPanel();
+
+        /* Nacteni rany */
+        Shot shot = shotCaptureDraw.getActualShot();
+
+        /* Cislo rany */
+        tvRow1.setText(context.getString(R.string.GameOnHole_string_shotNumber));
+        tvRow2.setText(String.valueOf(shot.getNumber()) + ".");
+
+        /* Hul */
+        tvRow3.setText(context.getString(R.string.GameOnHole_string_club));
+        tvRow4.setText(shot.getClubId() == -1 ?
+                context.getString(R.string.GameOnHole_string_notSet) :
+                dbi.getClub(shot.getClubId()).getName());
+
+        /* Odkud */
+        tvRow5.setText(context.getString(R.string.GameOnHole_string_from));
+        tvRow6.setText(AreaType.getString(shot.getFromAreaType(),context));
+
+        /* Kam */
+        tvRow7.setText(context.getString(R.string.GameOnHole_string_to));
+        tvRow8.setText(AreaType.getString(shot.getToAreaType(),context));
+
+        /* Poloha mice */
+        tvRow9.setText(context.getString(R.string.GameOnHole_string_ballArea));
+        tvRow10.setText(BallPosition.getString(shot.getBallPosition(),context));
+
+        /* Specifikace rany */
+        tvRow11.setText(context.getString(R.string.GameOnHole_string_shotSpecification));
+        tvRow12.setText(ShotSpecification.getString(shot.getSpecification(),context));
+    }
+
 
     /** Zobrazeni radku 7,8 info panelu **/
     public void showLastPanelInfoRow() {
@@ -502,7 +576,31 @@ public class GameOnHole extends ActionBarActivity {
         if (trRow8.getVisibility() == android.view.View.VISIBLE)
             trRow8.setVisibility(android.view.View.GONE);
     }
-    
+
+    /** Zobrazeni radku potrebnych pri zadavani rany **/
+    public void showCaptureShotInfoPanel() {
+        if (trRow9.getVisibility() != android.view.View.VISIBLE)
+            trRow9.setVisibility(android.view.View.VISIBLE);
+        if (trRow10.getVisibility() != android.view.View.VISIBLE)
+            trRow10.setVisibility(android.view.View.VISIBLE);
+        if (trRow11.getVisibility() != android.view.View.VISIBLE)
+            trRow11.setVisibility(android.view.View.VISIBLE);
+        if (trRow12.getVisibility() != android.view.View.VISIBLE)
+            trRow12.setVisibility(android.view.View.VISIBLE);
+    }
+
+    /** Schovani radku potrebnych pri zadavani rany **/
+    public void hideCaptureShotInfoPanel() {
+        if (trRow9.getVisibility() == android.view.View.VISIBLE)
+            trRow9.setVisibility(android.view.View.GONE);
+        if (trRow10.getVisibility() == android.view.View.VISIBLE)
+            trRow10.setVisibility(android.view.View.GONE);
+        if (trRow11.getVisibility() == android.view.View.VISIBLE)
+            trRow11.setVisibility(android.view.View.GONE);
+        if (trRow12.getVisibility() == android.view.View.VISIBLE)
+            trRow12.setVisibility(android.view.View.GONE);
+    }
+
     /*** ZPRACOVANI DOTYKU ***/
 
     /** Reakce na zakladni gesta **/
@@ -511,9 +609,9 @@ public class GameOnHole extends ActionBarActivity {
         tivCourseImage.setOnTouchListener(new android.view.View.OnTouchListener() {
             public boolean onTouch(android.view.View v, MotionEvent event) {
                 int action = MotionEventCompat.getActionMasked(event);
-                switch(action) {
+                switch (action) {
                     case (MotionEvent.ACTION_DOWN):
-                        singleTapDetector.setDownPoint((int)event.getX(),(int)event.getY());
+                        singleTapDetector.setDownPoint((int) event.getX(), (int) event.getY());
                         return true;
                     case (MotionEvent.ACTION_UP):
                         singleTapDetector.setUpPoint((int) event.getX(), (int) event.getY());
@@ -631,7 +729,7 @@ public class GameOnHole extends ActionBarActivity {
     public void goToHoleScore() {
         Intent iHoleScore =  new Intent(context,HoleScore.class);
         iHoleScore.putExtra("EXTRA_HOLE_SCORE_IDGAME"      , game.getId());
-        iHoleScore.putExtra("EXTRA_HOLE_SCORE_IDHOLE"      , hole.getId());
+        iHoleScore.putExtra("EXTRA_HOLE_SCORE_IDHOLE", hole.getId());
         iHoleScore.putExtra("EXTRA_HOLE_SCORE_NUM_OF_SHOTS", 2); //TODO vypocet poctu ran
         startActivity(iHoleScore);
     }
@@ -644,6 +742,84 @@ public class GameOnHole extends ActionBarActivity {
 
         /** Zobrazeni infopanelu **/
         infoPanelScore(score);
+
+        /** Reakce na klinuti na info panel */
+        infoPanelScoreClickHandle();
+    }
+
+    /** Reakce na kliknuti na informacni panel **/
+    public void infoPanelScoreClickHandle() {
+
+        /* Zvoleni zdrojoveho bodu mereni */
+        tlInfoPanel.setOnClickListener(new android.view.View.OnClickListener() {
+            @Override
+            public void onClick(android.view.View v) {
+                if (actualInfoPanel == INFO_PANEL_SCORE)
+                    goToHoleScore();
+            }
+        });
+
+    }
+
+    /*** ZAZNAM RANY ***/
+
+    /** Inicializace zaznamu rany **/
+    public void captureShot() {
+
+        /* Reainicializace bitmapy */
+        reinitBitmap();
+
+        /* Inicializace objektu pro vykreslovani */
+        shotCaptureDraw =  new ShotCaptureDraw(game,hole,tee,canvas,bitmap,tivCourseImage,dbi,dbr);
+
+        /* Vygenerovani hodnot prvni rany - ta je pristupna jako "shotCaptureDraw.getActualShot()" */
+        shotCaptureDraw.initFirstShot();
+
+        /* Vykresleni prvni rany */
+        shotCaptureDraw.drawActualShot();
+
+        /* Inicializace informacniho panelu pro zadavani rany */
+        infoPanelCaptureShot();
+
+        /* Reakce na kliknuti na info panel */
+        infoPanelCaptureShotHandle();
+    }
+
+    /** Reakce na kliknuti na polozky info panelu Zadani rany **/
+    public void infoPanelCaptureShotHandle() {
+
+        /* Zmena hole */
+        trRow3.setOnClickListener(new android.view.View.OnClickListener() {
+            @Override
+            public void onClick(android.view.View v) {
+                if (actualInfoPanel == INFO_PANEL_CAPTURE_SHOT)
+                    SelectClub.dialog(context, dbi.getAllClubs(), shotCaptureDraw.getActualShot()).show();
+            }
+        });
+        trRow4.setOnClickListener(new android.view.View.OnClickListener() {
+            @Override
+            public void onClick(android.view.View v) {
+                if (actualInfoPanel == INFO_PANEL_CAPTURE_SHOT)
+                    SelectClub.dialog(context, dbi.getAllClubs(), shotCaptureDraw.getActualShot()).show();
+            }
+        });
+
+        /* Zmena polohy mice */
+        trRow9.setOnClickListener(new android.view.View.OnClickListener() {
+            @Override
+            public void onClick(android.view.View v) {
+                if (actualInfoPanel == INFO_PANEL_CAPTURE_SHOT)
+                    SelectBallPosition.dialog(context,shotCaptureDraw.getActualShot()).show();
+            }
+        });
+        trRow10.setOnClickListener(new android.view.View.OnClickListener() {
+            @Override
+            public void onClick(android.view.View v) {
+                if (actualInfoPanel == INFO_PANEL_CAPTURE_SHOT)
+                    SelectBallPosition.dialog(context,shotCaptureDraw.getActualShot()).show();
+            }
+        });
+
     }
 
     /*** POMOCNE METODY ***/
@@ -658,7 +834,6 @@ public class GameOnHole extends ActionBarActivity {
         /* Obnoveni */
         canvas.setBitmap(bitmap);
         tivCourseImage.setImageBitmap(bitmap);
-        displayCurrentPosition();
         tivCourseImage.invalidate();
     }
 

@@ -2,14 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group>
-        <item android:id="@+id/GameOnHoleMenu_item_prevHole"
-            android:title="@string/GameOnHoleMenu_string_prevHole" />
-
-        <item android:id="@+id/GameOnHoleMenu_item_nextHole"
-            android:title="@string/GameOnHoleMenu_string_nextHole" />
-    </group>
-
-    <group>
         <item android:id="@+id/GameOnHoleMenu_item_measuring"
             android:title="@string/GameOnHoleMenu_string_measuring" />
 

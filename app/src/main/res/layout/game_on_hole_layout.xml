@@ -20,7 +20,8 @@
         android:layout_gravity="bottom|left"
         android:layout_marginLeft="2dp"
         android:layout_marginBottom="2dp"
-        android:background="@drawable/game_on_hole_border">
+        android:background="@drawable/game_on_hole_border"
+        android:id="@+id/GameOnHole_tableLayout_infoPanel">
 
         <TableRow
             android:layout_width="match_parent"
@@ -130,6 +131,7 @@
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@drawable/game_on_hole_underline"
             android:id="@+id/GameOnHole_tableRow_row8">
 
             <TextView
@@ -140,6 +142,64 @@
                 android:id="@+id/GameOnHole_textView_row8"
                 android:layout_margin="3dp"/>
         </TableRow>
-    </TableLayout>
 
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/game_on_hole_underline"
+            android:id="@+id/GameOnHole_tableRow_row9">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text=""
+                android:id="@+id/GameOnHole_textView_row9"
+                android:layout_margin="3dp"/>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/game_on_hole_underline"
+            android:id="@+id/GameOnHole_tableRow_row10">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text=""
+                android:id="@+id/GameOnHole_textView_row10"
+                android:layout_margin="3dp"/>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/game_on_hole_underline"
+            android:id="@+id/GameOnHole_tableRow_row11">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text=""
+                android:id="@+id/GameOnHole_textView_row11"
+                android:layout_margin="3dp"/>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/GameOnHole_tableRow_row12">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text=""
+                android:id="@+id/GameOnHole_textView_row12"
+                android:layout_margin="3dp"/>
+        </TableRow>
+    </TableLayout>
 </FrameLayout>

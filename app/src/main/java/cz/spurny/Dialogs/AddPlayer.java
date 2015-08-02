@@ -145,6 +145,9 @@ public class AddPlayer {
         /* Vlozeni do databaze */
         long id = dbi.createPlayer(player);
 
+        /* Prdani id */
+        player.setId((int)id);
+
         /* Vlozeni do seznamu hracu v listu */
         players.add(player);
 

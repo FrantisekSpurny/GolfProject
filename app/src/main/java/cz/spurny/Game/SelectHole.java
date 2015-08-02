@@ -21,6 +21,7 @@ import java.util.List;
 import cz.spurny.Calculations.DistanceCalculations;
 import cz.spurny.CreateGame.R;
 import cz.spurny.DatabaseInternal.DatabaseHandlerInternal;
+import cz.spurny.DatabaseInternal.Player;
 import cz.spurny.DatabaseResort.Hole;
 import cz.spurny.Dialogs.ApplicationTerminate;
 import cz.spurny.Dialogs.GameTerminate;
@@ -41,7 +42,10 @@ public class SelectHole extends ActionBarActivity {
 
     /* Adapter */
     SelectHoleAdapter adapter;
-    List<Hole> holes = null; // hodnoty pro adapter
+    List<Hole> holes = null; // hodnoty pro
+
+    /* Seznam hracu dane hry */
+    List<Player> players;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,11 +66,14 @@ public class SelectHole extends ActionBarActivity {
         /* Pripojeni prvku GUI */
         lvHoles = (ListView) findViewById(R.id.SelectHole_listView_holesList);
 
+        /* Ziskani vsech hracu dane hry */
+        players = dbi.getAllPlaymatesOfGame((int)gameId);
+
         /* Ziskani hodnot z databaze */
         holes = dbi.getAllHolesOfGame((int)gameId);
 
         /* Tvorba adapteru */
-        adapter = new SelectHoleAdapter(this, holes,dbi.getNumOfGameCourses((int)gameId),holeLengthArray);
+        adapter = new SelectHoleAdapter(this, holes,dbi.getNumOfGameCourses((int)gameId),holeLengthArray,players,dbi,(int)gameId);
 
 		/* Prirazeni adapteru */
         lvHoles.setAdapter(adapter);
