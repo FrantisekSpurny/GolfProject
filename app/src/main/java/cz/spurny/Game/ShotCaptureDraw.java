@@ -60,6 +60,10 @@ public class ShotCaptureDraw {
     int    arrowWidht      = 20;           // Sirka sipky
     int    arrowHeight     = 7;          // Vyska sipky
 
+    /** Priznaky **/
+    private boolean fromSelection;
+    private boolean destinationSelection;
+
     /*** INICIALIZACE ***/
 
     /** Konstruktor **/
@@ -365,5 +369,21 @@ public class ShotCaptureDraw {
 
     public void setShotList(List<Shot> shotList) {
         this.shotList = shotList;
+    }
+
+    public boolean isFromSelection() {
+        return fromSelection;
+    }
+
+    public void setFromSelection(boolean fromSelection) {
+        this.fromSelection = fromSelection;
+    }
+
+    public boolean isDestinationSelection() {
+        return destinationSelection;
+    }
+
+    public void setDestinationSelection(boolean destinationSelection) {
+        this.destinationSelection = destinationSelection;
     }
 }

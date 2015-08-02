@@ -130,5 +130,9 @@
     <string name="BallPosition_string_newPenalty">Nová s trestnou</string>
     <string name="BallPosition_string_lostBall">Ztracený míč</string>
     <string name="SelectClub_string_title">Výběr hole</string>
+    <string name="SelectSpecification_string_title">Výběr specifikace</string>
+    <string name="SelectBallPosition_string_title">Výběr pozice míče</string>
+    <string name="SelectFromAreaType_string_title">Výběr plochy místa odpalu</string>
+    <string name="SelectToAreaType_string_title">Výběr typu plochy dopadu</string>
 
 </resources>

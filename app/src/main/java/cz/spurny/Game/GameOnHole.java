@@ -37,6 +37,9 @@ import cz.spurny.DatabaseResort.View;
 import cz.spurny.Dialogs.MeasureDrawPointSelectionMethod;
 import cz.spurny.Dialogs.SelectBallPosition;
 import cz.spurny.Dialogs.SelectClub;
+import cz.spurny.Dialogs.SelectFromAreaType;
+import cz.spurny.Dialogs.SelectSpecification;
+import cz.spurny.Dialogs.SelectToAreaType;
 import cz.spurny.GpsApi.GpsCoordinates;
 import cz.spurny.GpsApi.GpsMethods;
 import cz.spurny.Library.BitmapConversion;
@@ -804,6 +807,38 @@ public class GameOnHole extends ActionBarActivity {
             }
         });
 
+       /* Zmena plochy odpalu */
+        trRow5.setOnClickListener(new android.view.View.OnClickListener() {
+            @Override
+            public void onClick(android.view.View v) {
+                if (actualInfoPanel == INFO_PANEL_CAPTURE_SHOT)
+                    SelectFromAreaType.dialog(context, shotCaptureDraw.getActualShot()).show();
+            }
+        });
+        trRow6.setOnClickListener(new android.view.View.OnClickListener() {
+            @Override
+            public void onClick(android.view.View v) {
+                if (actualInfoPanel == INFO_PANEL_CAPTURE_SHOT)
+                    SelectFromAreaType.dialog(context,shotCaptureDraw.getActualShot()).show();
+            }
+        });
+
+        /* Zmena plochy dopadu */
+        trRow7.setOnClickListener(new android.view.View.OnClickListener() {
+            @Override
+            public void onClick(android.view.View v) {
+                if (actualInfoPanel == INFO_PANEL_CAPTURE_SHOT)
+                    SelectToAreaType.dialog(context, shotCaptureDraw.getActualShot()).show();
+            }
+        });
+        trRow8.setOnClickListener(new android.view.View.OnClickListener() {
+            @Override
+            public void onClick(android.view.View v) {
+                if (actualInfoPanel == INFO_PANEL_CAPTURE_SHOT)
+                    SelectToAreaType.dialog(context,shotCaptureDraw.getActualShot()).show();
+            }
+        });
+
         /* Zmena polohy mice */
         trRow9.setOnClickListener(new android.view.View.OnClickListener() {
             @Override
@@ -820,6 +855,22 @@ public class GameOnHole extends ActionBarActivity {
             }
         });
 
+
+        /* Zmena specifikace rany */
+        trRow11.setOnClickListener(new android.view.View.OnClickListener() {
+            @Override
+            public void onClick(android.view.View v) {
+                if (actualInfoPanel == INFO_PANEL_CAPTURE_SHOT)
+                    SelectSpecification.dialog(context, shotCaptureDraw.getActualShot()).show();
+            }
+        });
+        trRow12.setOnClickListener(new android.view.View.OnClickListener() {
+            @Override
+            public void onClick(android.view.View v) {
+                if (actualInfoPanel == INFO_PANEL_CAPTURE_SHOT)
+                    SelectSpecification.dialog(context,shotCaptureDraw.getActualShot()).show();
+            }
+        });
     }
 
     /*** POMOCNE METODY ***/
