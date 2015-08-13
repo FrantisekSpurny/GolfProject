@@ -109,7 +109,7 @@ public class SelectCourse extends ActionBarActivity {
         Intent iSelectPlaymate = new Intent(this,SelectPlaymate.class);
         iSelectPlaymate.putExtra("EXTRA_SELECT_PLAYMATE_ID_COURSE_1",selectedCourse1.getId());
         iSelectPlaymate.putExtra("EXTRA_SELECT_PLAYMATE_ID_TEE_1"   ,selectedTee1.getId());
-        iSelectPlaymate.putExtra("EXTRA_SELECT_PLAYMATE_ID_COURSE_2",selectedCourse1==null?-1:selectedCourse1.getId());
+        iSelectPlaymate.putExtra("EXTRA_SELECT_PLAYMATE_ID_COURSE_2",selectedCourse2==null?-1:selectedCourse2.getId());
         iSelectPlaymate.putExtra("EXTRA_SELECT_PLAYMATE_ID_TEE_2"   ,selectedTee2   ==null?-1:selectedTee2.getId());
 
         startActivity(iSelectPlaymate);

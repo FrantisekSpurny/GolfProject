@@ -8,15 +8,21 @@ package cz.spurny.Game;
  * Datum:  31.07.2015
  */
 
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.drawable.Drawable;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import cz.spurny.Calculations.DistanceCalculations;
+import cz.spurny.CreateGame.R;
 import cz.spurny.DatabaseInternal.Club;
 import cz.spurny.DatabaseInternal.DatabaseHandlerInternal;
 import cz.spurny.DatabaseInternal.Game;
@@ -26,8 +32,10 @@ import cz.spurny.DatabaseResort.DatabaseHandlerResort;
 import cz.spurny.DatabaseResort.Hole;
 import cz.spurny.DatabaseResort.Point;
 import cz.spurny.DatabaseResort.Tee;
+import cz.spurny.DatabaseResort.View;
 import cz.spurny.GpsApi.GpsCoordinates;
 import cz.spurny.GpsApi.GpsMethods;
+import cz.spurny.Library.BitmapConversion;
 import cz.spurny.Library.TouchImageView;
 
 public class ShotCaptureDraw {
@@ -41,12 +49,14 @@ public class ShotCaptureDraw {
     private Hole                    hole;
     private Canvas                  canvas;
     private Bitmap                  bitmap;
+    private View                    view;
     private TouchImageView          tivCourseImage;
     private DatabaseHandlerResort   dbr;
     private DatabaseHandlerInternal dbi;
+    private Context                 context;
 
     /** Stetce **/
-    Paint paintLine,paintText,paintTextLarge,paintCircle;
+    Paint paintLine,paintText,paintTextLarge,paintCircle,paintPuts;
 
     /** Parametry vykreslovani **/
     int    lineThickness   = 2;           // Sirka vykreslenych linek
@@ -64,6 +74,9 @@ public class ShotCaptureDraw {
     private boolean fromSelection;
     private boolean destinationSelection;
 
+    /** Drawable **/
+    Drawable dShotDone;
+
     /*** INICIALIZACE ***/
 
     /** Konstruktor **/
@@ -72,9 +85,11 @@ public class ShotCaptureDraw {
                            Tee tee,
                            Canvas canvas,
                            Bitmap bitmap,
+                           View   view,
                            TouchImageView tivCourseImage,
                            DatabaseHandlerInternal dbi,
-                           DatabaseHandlerResort   dbr) {
+                           DatabaseHandlerResort   dbr,
+                           Context context) {
 
         this.game           = game;
         this.player         = dbi.getMainPlayer();
@@ -82,13 +97,25 @@ public class ShotCaptureDraw {
         this.tee            = tee;
         this.canvas         = canvas;
         this.bitmap         = bitmap;
+        this.view           = view;
         this.tivCourseImage = tivCourseImage;
         this.dbi            = dbi;
         this.dbr            = dbr;
         this.shotList       = dbi.getAllShots(hole.getId(),game.getId());
+        this.context        = context;
+
+        if (shotList == null)
+            shotList = new ArrayList<>();
 
         /* Incializace stetcu */
         initPaints();
+
+        /* Inciializace drawables */
+        initDrawables();
+
+        /* Incializace priznaku */
+        fromSelection        = false;
+        destinationSelection = false;
     }
 
     /** Inicializace stetcu pro vykreslovani **/
@@ -127,6 +154,21 @@ public class ShotCaptureDraw {
             }
         };
 
+        paintPuts = new Paint() {
+            {
+                setStyle(Paint.Style.STROKE);
+                setStrokeCap(Paint.Cap.ROUND);
+                setStrokeWidth(lineThickness);
+                setAntiAlias(true);
+                setColor(lineColor);
+                setPathEffect(new DashPathEffect(new float[]{10, 10}, 5));
+            }
+        };
+    }
+
+    /** Inicilializace "Drawables" (vykreslitelnych objektu) **/
+    public void initDrawables() {
+        dShotDone = context.getResources().getDrawable(R.drawable.check);
     }
 
     /** Inicializace prvni rany, uzivatel zatim nic nezadal **/
@@ -157,6 +199,9 @@ public class ShotCaptureDraw {
         shot.setBallPosition(BallPosition.OK);
 
         actualShot = shot;
+
+        /** Uzivatel muze editovat polohu dopadu **/
+        destinationSelection = true;
 
         return;
     }
@@ -215,6 +260,129 @@ public class ShotCaptureDraw {
         shot.setToAreaType(AreaType.GREEN);
     }
 
+    /*** ULOZENI RANY ***/
+
+    /** Ulozeni rany do databaze a inicializace dalsi rany **/
+    public void saveActualShot() {
+
+        System.out.println(actualShot.getNumber() + " - cislo rany");
+
+        /* Vlozeni do databaze */
+        dbi.createShot(actualShot);
+        shotList.add(actualShot);
+
+        /* Uprava prumerne vzdalenosti rany pouzite hole */
+        recalculateAverageStrokeLenght(actualShot);
+
+        /** Prekresleni **/
+        reinitBitmap();
+        drawShotList();
+
+        /* Pokud rana dopadla na green, uzivatel bude zadavat skore jamky */
+        if (actualShot.getToAreaType() == AreaType.GREEN) {
+            ((GameOnHole) context).goToHoleScore();
+            holeFinished();
+            shotList.add(actualShot);
+            return;
+        }
+
+        /* Tvorba nasledujici rany */
+        initShot(actualShot);
+
+        /* Vykresleni nove aktualni rany */
+        drawActualShot();
+
+        /** Aktualizace informacniho panelu **/
+        ((GameOnHole)context).infoPanelCaptureShot();
+    }
+
+    /** Incializace rany **/
+    public void initShot(Shot previousShot) {
+
+        Shot shot = new Shot();
+
+        /** Bod "od" **/
+        generateFromPoint(previousShot,shot);
+
+        /** Bod "Kam" **/
+        generateNextPoint(shot);
+
+        /** Vzdalenost rany **/
+        calculateShotDistance(shot);
+
+        /** Ostatni parametry **/
+        shot.setGameId(game.getId());
+        shot.setHoleId(hole.getId());
+        shot.setClubId(determineClub(shot));
+        shot.setNumber(shotList.size() + 1); // prvni rana
+        shot.setDeviation(0); // defaultni hodnota je vzdy presna
+        shot.setSpecification(ShotSpecification.STRAIGHT);
+        shot.setBallPosition(BallPosition.OK);
+
+        actualShot = shot;
+
+        /** Uzivatel muze editovat polohu dopadu **/
+        destinationSelection = true;
+
+        return;
+    }
+
+    /** Urceni bodu odpalu podle predchozi rany **/
+    public void generateFromPoint(Shot previousShot,Shot shot) {
+
+        switch (previousShot.getBallPosition()) {
+
+            case BallPosition.OK:
+                pointPreviousTo(previousShot, shot,false);
+                break;
+            case BallPosition.DROP_FREE:
+                pointPreviousTo(previousShot, shot,true);
+                break;
+            case BallPosition.DROP_PENALTY:
+                pointDropPenalty(previousShot,shot);
+                break;
+            case BallPosition.LOST_BALL:
+                pointPreviousFrom(previousShot, shot,true);
+                break;
+            case BallPosition.NEW_PENALTY:
+                pointPreviousFrom(previousShot,shot,true);
+                break;
+        }
+    }
+
+    /** Bod_odkud = bod_kam - 1 **/
+    public void pointPreviousTo(Shot previousShot,Shot shot,boolean modification) {
+        shot.setFromX        (previousShot.getToX());
+        shot.setFromY        (previousShot.getToY());
+        shot.setFromLatitude (previousShot.getToLatitude());
+        shot.setFromlongitude(previousShot.getToLongitude());
+        shot.setFromAreaType(previousShot.getToAreaType());
+
+        // TODO nelze modifikovat polohu
+    }
+
+    /** Bod_odkud = bod_odkud -1 **/
+    public void pointPreviousFrom(Shot previousShot,Shot shot,boolean modification) {
+        shot.setFromX        (previousShot.getFromX());
+        shot.setFromY        (previousShot.getFromY());
+        shot.setFromLatitude (previousShot.getFromLatitude());
+        shot.setFromlongitude(previousShot.getFromlongitude());
+        shot.setFromAreaType(previousShot.getFromAreaType());
+
+        // TODO nelze modifikovat polohu
+    }
+
+    /** Bod odpalu pro polohu "Drop s trestnou" **/
+    public void pointDropPenalty(Shot previousShot,Shot shot) {
+
+        // TODO tady dodat vypocet
+        shot.setFromX        (previousShot.getToX());
+        shot.setFromY        (previousShot.getToY());
+        shot.setFromLatitude (previousShot.getToLatitude());
+        shot.setFromlongitude(previousShot.getToLongitude());
+        shot.setFromAreaType(previousShot.getToAreaType());
+    }
+
     /*** POMOCNE METODY ***/
 
     /** Vypocet vzdalenosti rany **/
@@ -249,10 +417,70 @@ public class ShotCaptureDraw {
         return clubId;
     }
 
+    /** Prepocet prumerne vzdalenosti odpalu u hole **/
+    public void recalculateAverageStrokeLenght(Shot shot) {
+
+        Club club           = dbi.getClub(shot.getClubId());
+        double shotDistance = shot.getDistance();
+        double currentASL   = club.getAverageStrokeLength();
+
+        /* Nastaveni nove prumerne vzdalenosti */
+        club.setAverageStrokeLength((currentASL + shotDistance) / 2);
+
+        /* Aktualizace databaze */
+        dbi.updateClub(club);
+    }
+
+    /** Byla jiz zadana posledni rana ? **/
+    public boolean isLastShot() {
+
+        if (shotList.size() == 0)
+            return false;
+
+        /* Posledni rana vede na GREEN a pro danou jamku bylo zadano skore */
+        if (shotList.get(shotList.size()-1).getToAreaType() == AreaType.GREEN
+            && dbi.getScore(hole.getId(),player.getId(),game.getId()) != null)
+            return true;
+        else
+            return false;
+    }
+
+    /** Jamka uz je uzavrena zadavat rany **/
+    public void holeFinished() {
+
+        /* Nelze vybirat nove body */
+        destinationSelection = false;
+        fromSelection        = false;
+
+        /* Nelze zadavat nove body */
+        ((GameOnHole)context).getMiChangeFrom().setEnabled(false);
+        ((GameOnHole)context).getMiChangeTo()  .setEnabled(false);
+        ((GameOnHole)context).getMiSaveShot()  .setEnabled(false);
+    }
+
+    /** Urceni zdali se dany bod nachazi na greenu **/
+    public boolean isOnGreen(Point point) {
+
+        Point greenStart = dbr.getPointGreenStart(hole.getId());
+        Point greenEnd   = dbr.getPointGreenEnd  (hole.getId());
+
+        int yStart = greenStart.getPixelY();
+        int yPoint = point     .getPixelY();
+        int yEnd   = greenEnd  .getPixelY();
+
+        if (yStart >= yPoint && yPoint >= yEnd)
+            return true;
+
+        return false;
+    }
+
     /*** VYKRESLOVANI ***/
 
     /** Vykresleni aktualni rany **/
     public void drawActualShot() {
+
+        if (actualShot == null)
+            return;
 
         int x1 = actualShot.getFromX();
         int x2 = actualShot.getToX();
@@ -263,7 +491,7 @@ public class ShotCaptureDraw {
         canvas.drawLine(x1,y1,x2,y2,paintLine);
 
         /** Vykresleni textu rany na linku **/
-        drawText(x1,y1,x2,y2,actualShot);
+        drawText(x1, y1, x2, y2, actualShot);
 
         /** Vykresleni "puntiku" na zacatku linky **/
         drawLineStart(actualShot);
@@ -273,6 +501,41 @@ public class ShotCaptureDraw {
 
         /** Obnoveni obrazku **/
         tivCourseImage.invalidate();
+    }
+
+    /** Vykresleni vsech ostatnich ran **/
+    public void drawShotList() {
+
+        if (shotList.size() <= 0)
+            return;
+
+        for (int i = 0; i < shotList.size(); i++) {
+            drawShot(shotList.get(i));
+        }
+
+        /** Obnoveni obrazku **/
+        tivCourseImage.invalidate();
+    }
+
+    /** Vykresleni jedne rany **/
+    public void drawShot(Shot shot) {
+
+        int x1 = shot.getFromX();
+        int x2 = shot.getToX();
+        int y1 = shot.getFromY();
+        int y2 = shot.getToY();
+
+        /** Vykresleni linky **/
+        canvas.drawLine(x1, y1, x2, y2, paintLine);
+
+        /** Vykresleni textu rany na linku **/
+        drawText(x1, y1, x2, y2, shot);
+
+        /** Vykresleni "puntiku" na zacatku linky **/
+        drawLineStart(shot);
+
+        /** Vykresleni konce linky (sipka a otaznik) **/
+        drawLineEnd(shot);
     }
 
     /** Vykresleni textu na linku **/
@@ -317,6 +580,28 @@ public class ShotCaptureDraw {
             canvas.drawCircle(x,y,circleRadius,paintCircle);
     }
 
+    /** Vykresleni "puntiku na konci linky. Jeho velikost je ovlivnena cislem rany" **/
+    public void drawLineEnd(Shot shot) {
+
+        int x1 = shot.getFromX();
+        int x2 = shot.getToX();
+        int y1 = shot.getFromY();
+        int y2 = shot.getToY();
+
+        /* U rany na green rany je vykreslen vetsi "puntik" */
+        if (shot.getToAreaType() == AreaType.GREEN)
+            canvas.drawCircle(x2,y2,circleRadius*2,paintCircle);
+        else {
+            canvas.drawCircle(x2,y2,circleRadius,paintCircle);
+        }
+
+        /** Vykresleni "Fajfky" **/
+        int x = x2-textMargin-textSize;
+        int y = y2-textSize;
+        dShotDone.setBounds(x, y, x + textSize * 2, y + textSize * 2);
+        dShotDone.draw(canvas);
+    }
+
     /** Vykresleni konce aktivni rany **/
     private void drawActiveLineEnd() {
 
@@ -326,14 +611,17 @@ public class ShotCaptureDraw {
         int y2 = actualShot.getToY();
 
         /** Vykresleni sipky **/
-        drawArrowHead(x1,x2,y1,y2,arrowWidht,arrowHeight);
+        drawArrowHead(x1, x2, y1, y2, arrowWidht, arrowHeight);
+
+        /** Vykresleni otazniku **/
+        canvas.drawText("?", x2 - textMargin / 2 - textSize, y2 + textSize, paintTextLarge);
     }
 
     /** Vykresleni sipky na konci linky **/
     public void drawArrowHead(int x1,int x2,int y1,int y2,int d,int h) {
 
         int dx = x2 - x1, dy = y2 - y1;
-        double D = Math.sqrt(dx*dx + dy*dy);
+        double D = Math.sqrt(dx * dx + dy * dy);
         double xm = D - d, xn = xm, ym = h, yn = -h, x;
         double sin = dy/D, cos = dx/D;
 
@@ -349,9 +637,63 @@ public class ShotCaptureDraw {
         path.reset();
         path.moveTo((int)xn,(int)yn);
         path.lineTo(x2,y2);
-        path.lineTo((int)xm,(int)ym);
+        path.lineTo((int) xm, (int) ym);
 
-        canvas.drawPath(path,paintLine);
+        canvas.drawPath(path, paintLine);
+    }
+
+    /** Vykreslovani patu **/
+    public void drawPuts() {
+
+        if (!isLastShot())
+            return;
+
+        /* Ziskani bodu zacatku a konce greenu */
+        Point greenStart = dbr.getPointGreenStart(view.getId());
+        Point greenEnd   = dbr.getPointGreenEnd  (view.getId());
+
+        int x1 = greenStart.getPixelX();
+        int x2 = greenEnd  .getPixelX();
+        int y1 = greenStart.getPixelY();
+        int y2 = greenEnd  .getPixelY();
+
+        /* Vypocet stredoveho bodu */
+        int x3,y3;
+
+        if (x1 >= x2)
+            x3 = x2 +  Math.abs(x1-x2)/2;
+        else
+            x3 = x1 +  Math.abs(x1-x2)/2;
+
+        if (y1 > y2)
+            y3 = y2 + Math.abs(y1-y2)/2;
+        else
+            y3 = y1 + Math.abs(y1-y2)/2;
+
+        /* Vypocet vzdalenosti bodu */
+        int radius = DistanceCalculations.pointDistancePx(greenStart,greenEnd);
+
+        /* Vykresleni kruhu pres green */
+        canvas.drawCircle(x3,y3,radius/2,paintPuts);
+
+        /* Vykresleni textu */
+        String putsText = dbi.getScore(hole.getId(),player.getId(),game.getId()).getPuts()
+                          + " "
+                          + context.getString(R.string.ShotCaptureDraw_string_puts);
+        canvas.drawText(putsText,x3 + radius/2 + textMargin,y3+textSize,paintTextLarge);
+    }
+
+    /** Prekresleni bitmapy **/
+    public void reinitBitmap() {
+
+        /* Nacteni puvodni bitmapy */
+        bitmap = BitmapConversion
+                .convertToMutable(BitmapFactory.decodeByteArray(view.getImage(), 0, view.getImage().length));
+
+        /* Obnoveni */
+        canvas.setBitmap(bitmap);
+        tivCourseImage.setImageBitmap(bitmap);
+        tivCourseImage.invalidate();
     }
 
     /*** GETTERS AND SETTERS ***/
@@ -385,5 +727,12 @@ public class ShotCaptureDraw {
 
     public void setDestinationSelection(boolean destinationSelection) {
         this.destinationSelection = destinationSelection;
+    }
+
+    public Shot getLastPlayedShot() {
+        if (shotList.size() == 0)
+            return null;
+        else
+            return shotList.get(shotList.size()-1);
     }
 }

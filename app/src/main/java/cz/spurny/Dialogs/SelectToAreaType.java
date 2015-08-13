@@ -16,6 +16,7 @@ import android.widget.ListView;
 import cz.spurny.CreateGame.R;
 import cz.spurny.DatabaseInternal.Shot;
 import cz.spurny.Game.AreaType;
+import cz.spurny.Game.BallPosition;
 import cz.spurny.Game.GameOnHole;
 
 public class SelectToAreaType {
@@ -56,10 +57,33 @@ public class SelectToAreaType {
             public void onItemClick(AdapterView<?> arg0, android.view.View arg1, int arg2, long arg3) {
 
                 shot.setToAreaType(arg2);
+                shot.setBallPosition(changeBallPosition(shot));
+
                 ((GameOnHole)context).infoPanelCaptureShot();
                 dialog.hide();
             }
         });
 
     }
+
+    /** Zmena polohy dopadu na zaklade typu plochy **/
+    public static int changeBallPosition(Shot shot) {
+
+        switch (shot.getToAreaType()) {
+
+            case AreaType.FAIRWAY:
+            case AreaType.SEMIROUGH:
+            case AreaType.ROUGHT:
+            case AreaType.BUNKER:
+            case AreaType.GREEN:
+                return BallPosition.OK;
+            case AreaType.BIOZONE:
+            case AreaType.WATER:
+            case AreaType.OUT:
+                return BallPosition.DROP_FREE;
+        }
+
+        return BallPosition.OK;
+    }
+
 }

@@ -1,0 +1,193 @@
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="cz.spurny.Game.CurrentScore">
+
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="left"
+        android:background="@drawable/current_score_even_line">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/CurrentScore_string_holesPlayed"
+            android:id="@+id/CurrentScore_textView_holesPlayedTitle"
+            android:padding="2dp" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="left"
+        android:background="@drawable/current_score_even_line">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text=""
+            android:id="@+id/CurrentScore_textView_holesPlayed"
+            android:padding="4dp" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="left"
+        android:background="@drawable/current_score_odd_line">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/CurrentScore_string_player"
+            android:id="@+id/CurrentScore_textView_playerTitle"
+            android:padding="2dp" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="left"
+        android:background="@drawable/current_score_odd_line">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text=""
+            android:id="@+id/CurrentScore_textView_player"
+            android:padding="4dp" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="left"
+        android:background="@drawable/current_score_even_line">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/CurrentScore_string_shotsCountPar"
+            android:id="@+id/CurrentScore_textView_shotsCountTitle"
+            android:padding="2dp" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="left"
+        android:background="@drawable/current_score_even_line">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text=""
+            android:id="@+id/CurrentScore_textView_shotsCount"
+            android:padding="4dp" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="left"
+        android:background="@drawable/current_score_odd_line">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/CurrentScore_string_stableford"
+            android:id="@+id/CurrentScore_textView_stablefordTitle"
+            android:padding="2dp" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="left"
+        android:background="@drawable/current_score_odd_line">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text=""
+            android:id="@+id/CurrentScore_textView_stableford"
+            android:padding="4dp" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="left"
+        android:background="@drawable/current_score_even_line">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/CurrentScore_string_eagleBirdiePar"
+            android:id="@+id/CurrentScore_textView_eagleBiridieParTitle"
+            android:padding="2dp" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="left"
+        android:background="@drawable/current_score_even_line">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text=""
+            android:id="@+id/CurrentScore_textView_eagleBiridiePar"
+            android:padding="4dp" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="left"
+        android:background="@drawable/current_score_odd_line">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/CurrentScore_string_boogieOther"
+            android:id="@+id/CurrentScore_textView_boogieOtherTitle"
+            android:padding="2dp" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="left"
+        android:background="@drawable/current_score_odd_line">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text=""
+            android:id="@+id/CurrentScore_textView_boogieOther"
+            android:padding="4dp" />
+    </TableRow>
+</TableLayout>

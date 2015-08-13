@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/GameOnHole_menu_menu">
 
-    <group>
+    <group
+        android:id="@+id/GameOnHoleMenu_group_main">
         <item android:id="@+id/GameOnHoleMenu_item_measuring"
             android:title="@string/GameOnHoleMenu_string_measuring" />
 
@@ -13,5 +15,27 @@
 
         <item android:id="@+id/GameOnHoleMenu_item_currentScore"
             android:title="@string/GameOnHoleMenu_string_currentScore" />
+
+        <item android:id="@+id/GameOnHoleMenu_item_scoreCard"
+            android:title="@string/GameOnHoleMenu_string_scoreCard" />
+
+        <item android:id="@+id/GameOnHoleMenu_item_saveGame"
+            android:title="@string/GameOnHoleMenu_string_saveGame" />
     </group>
+
+    <group
+        android:id="@+id/GameOnHoleMenu_group_captureShot">
+        <item android:id="@+id/GameOnHoleMenu_item_saveShot"
+            android:title="@string/GameOnHoleMenu_string_saveShot" />
+
+        <item android:id="@+id/GameOnHoleMenu_item_changeFrom"
+            android:title="@string/GameOnHoleMenu_string_changeFrom" />
+
+        <item android:id="@+id/GameOnHoleMenu_item_changeTo"
+            android:title="@string/GameOnHoleMenu_string_changeTo" />
+
+        <item android:id="@+id/GameOnHoleMenu_item_exitCaptureShot"
+            android:title="@string/GameOnHoleMenu_string_exitCaptureShot" />
+    </group>
+
 </menu>

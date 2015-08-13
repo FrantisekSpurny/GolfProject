@@ -42,6 +42,10 @@ import cz.spurny.Toasts.ScoreSaved;
 
 public class HoleScore extends ActionBarActivity {
 
+    /*** KONSTANTY ***/
+    public final int SCORE_SAVED     = 1;
+    public final int SCORE_NOT_SAVED = 0;
+
     /*** ATRIBUTY ***/
 
     /** Kontext hry **/
@@ -119,6 +123,9 @@ public class HoleScore extends ActionBarActivity {
         /* Pripojeni databaze */
         dbr = new DatabaseHandlerResort  (context);
         dbi = new DatabaseHandlerInternal(context);
+
+        /* Defaultni hodnota vylsedku aktivity */
+        setResult(SCORE_NOT_SAVED);
 
         /* Prevzeti hodnot z volajici aktivity */
         getExtras();
@@ -394,6 +401,9 @@ public class HoleScore extends ActionBarActivity {
 
             /* Informovani uzivatele o ulozeni skore */
             ScoreSaved.getToast(context).show();
+
+            /* Nastaveni vysledku aktivity */
+            setResult(SCORE_SAVED);
         }
     }
 
@@ -415,7 +425,6 @@ public class HoleScore extends ActionBarActivity {
         } else
             this.finish();
     }
-
 
 
     /*** GETTERS AND SETTERS ***/

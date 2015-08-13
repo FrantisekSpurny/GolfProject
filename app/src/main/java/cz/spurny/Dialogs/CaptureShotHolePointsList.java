@@ -77,9 +77,14 @@ public class CaptureShotHolePointsList {
                 else
                     setPointTo  (points.get(arg2), shotCaptureDraw.getActualShot());
 
+
+                /* Prepocet vzdalenosti bodu a zmena hole na vhodnou */
+                shotCaptureDraw.calculateShotDistance(shotCaptureDraw.getActualShot());
+                shotCaptureDraw.determineClub        (shotCaptureDraw.getActualShot());
+
                 /** Prekresleni **/
                 ((GameOnHole)context).reinitBitmap();
-                // TODO vykresleni predchozich ran
+                shotCaptureDraw.drawShotList();
                 shotCaptureDraw.drawActualShot();
 
                 dialog.hide();

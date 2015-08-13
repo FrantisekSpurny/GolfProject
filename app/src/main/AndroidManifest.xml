@@ -57,6 +57,14 @@
             android:name="cz.spurny.Game.HoleScore"
             android:label="@string/HoleScore_string_title" >
         </activity>
+        <activity
+            android:name="cz.spurny.Game.CurrentScore"
+            android:label="@string/CurrentScore_string_title" >
+        </activity>
+        <activity
+            android:name="cz.spurny.Game.ScoreCard"
+            android:label="@string/ScoreCard_string_title" >
+        </activity>
     </application>
 
 </manifest>

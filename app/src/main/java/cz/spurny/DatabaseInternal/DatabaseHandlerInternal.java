@@ -19,6 +19,7 @@ import java.util.List;
 
 import cz.spurny.DatabaseResort.DatabaseHandlerResort;
 import cz.spurny.DatabaseResort.Hole;
+import cz.spurny.DatabaseResort.Resort;
 import cz.spurny.Settings.UserPreferences;
 
 public class DatabaseHandlerInternal extends SQLiteOpenHelper{
@@ -269,6 +270,16 @@ public class DatabaseHandlerInternal extends SQLiteOpenHelper{
         c.close();
 
         return game;
+    }
+
+    /* Ziskani resoru hriste */
+    public Resort getResortOfGame(int idGame) {
+        DatabaseHandlerResort dbr = new DatabaseHandlerResort(context);
+
+        Resort resort = dbr.getResort(dbr.getCourse(getAllGameCourseOfGame(idGame).get(0).getIdCourse()).getIdResort());
+
+        dbr.close();
+        return resort;
     }
 
     /** Tabulka HRA_HRISTE **/
@@ -579,6 +590,9 @@ public class DatabaseHandlerInternal extends SQLiteOpenHelper{
         if (c != null)
             c.moveToFirst();
 
+        if (c.getCount() <= 0)
+            return null;
+
         Club club = new Club();
         club.setId(c.getInt(c.getColumnIndex(PRIMARY_KEY_CLUB)));
         club.setName(c.getString(c.getColumnIndex(KEY_NAME)));
@@ -747,6 +761,7 @@ public class DatabaseHandlerInternal extends SQLiteOpenHelper{
         values.put(FOREIGN_KEY_GAME,    shot.getGameId());
         values.put(FOREIGN_KEY_HOLE,    shot.getHoleId());
         values.put(FOREIGN_KEY_CLUB,    shot.getClubId());
+        values.put(KEY_NUMBER,          shot.getNumber());
         values.put(KEY_FROM_LATITUDE,   shot.getFromLatitude());
         values.put(KEY_FROM_LONGITUDE,  shot.getFromlongitude());
         values.put(KEY_FROM_X,          shot.getFromX());
@@ -783,9 +798,10 @@ public class DatabaseHandlerInternal extends SQLiteOpenHelper{
 
         Shot shot = new Shot();
         shot.setId              (c.getInt   (c.getColumnIndex(PRIMARY_KEY_SHOT)));
-        shot.setGameId          (c.getInt   (c.getColumnIndex(FOREIGN_KEY_GAME)));
-        shot.setHoleId          (c.getInt   (c.getColumnIndex(FOREIGN_KEY_HOLE)));
-        shot.setClubId          (c.getInt   (c.getColumnIndex(FOREIGN_KEY_CLUB)));
+        shot.setGameId(c.getInt(c.getColumnIndex(FOREIGN_KEY_GAME)));
+        shot.setHoleId(c.getInt(c.getColumnIndex(FOREIGN_KEY_HOLE)));
+        shot.setClubId(c.getInt(c.getColumnIndex(FOREIGN_KEY_CLUB)));
+        shot.setNumber          (c.getInt   (c.getColumnIndex(KEY_NUMBER)));
         shot.setFromLatitude    (c.getDouble(c.getColumnIndex(KEY_FROM_LATITUDE)));
         shot.setFromlongitude   (c.getDouble(c.getColumnIndex(KEY_FROM_LONGITUDE)));
         shot.setFromX           (c.getInt   (c.getColumnIndex(KEY_FROM_X)));
@@ -820,9 +836,10 @@ public class DatabaseHandlerInternal extends SQLiteOpenHelper{
             do {
                 Shot shot = new Shot();
                 shot.setId              (c.getInt   (c.getColumnIndex(PRIMARY_KEY_SHOT)));
-                shot.setGameId          (c.getInt   (c.getColumnIndex(FOREIGN_KEY_GAME)));
-                shot.setHoleId          (c.getInt   (c.getColumnIndex(FOREIGN_KEY_HOLE)));
-                shot.setClubId          (c.getInt   (c.getColumnIndex(FOREIGN_KEY_CLUB)));
+                shot.setGameId(c.getInt(c.getColumnIndex(FOREIGN_KEY_GAME)));
+                shot.setHoleId(c.getInt(c.getColumnIndex(FOREIGN_KEY_HOLE)));
+                shot.setClubId(c.getInt(c.getColumnIndex(FOREIGN_KEY_CLUB)));
+                shot.setNumber(c.getInt(c.getColumnIndex(KEY_NUMBER)));
                 shot.setFromLatitude    (c.getDouble(c.getColumnIndex(KEY_FROM_LATITUDE)));
                 shot.setFromlongitude   (c.getDouble(c.getColumnIndex(KEY_FROM_LONGITUDE)));
                 shot.setFromX           (c.getInt   (c.getColumnIndex(KEY_FROM_X)));
@@ -863,9 +880,10 @@ public class DatabaseHandlerInternal extends SQLiteOpenHelper{
             do {
                 Shot shot = new Shot();
                 shot.setId              (c.getInt   (c.getColumnIndex(PRIMARY_KEY_SHOT)));
-                shot.setGameId          (c.getInt   (c.getColumnIndex(FOREIGN_KEY_GAME)));
-                shot.setHoleId          (c.getInt   (c.getColumnIndex(FOREIGN_KEY_HOLE)));
-                shot.setClubId          (c.getInt   (c.getColumnIndex(FOREIGN_KEY_CLUB)));
+                shot.setGameId(c.getInt(c.getColumnIndex(FOREIGN_KEY_GAME)));
+                shot.setHoleId(c.getInt(c.getColumnIndex(FOREIGN_KEY_HOLE)));
+                shot.setClubId(c.getInt(c.getColumnIndex(FOREIGN_KEY_CLUB)));
+                shot.setNumber(c.getInt(c.getColumnIndex(KEY_NUMBER)));
                 shot.setFromLatitude    (c.getDouble(c.getColumnIndex(KEY_FROM_LATITUDE)));
                 shot.setFromlongitude   (c.getDouble(c.getColumnIndex(KEY_FROM_LONGITUDE)));
                 shot.setFromX           (c.getInt   (c.getColumnIndex(KEY_FROM_X)));
@@ -909,6 +927,7 @@ public class DatabaseHandlerInternal extends SQLiteOpenHelper{
                 shot.setGameId          (c.getInt   (c.getColumnIndex(FOREIGN_KEY_GAME)));
                 shot.setHoleId          (c.getInt   (c.getColumnIndex(FOREIGN_KEY_HOLE)));
                 shot.setClubId          (c.getInt   (c.getColumnIndex(FOREIGN_KEY_CLUB)));
+                shot.setNumber          (c.getInt   (c.getColumnIndex(KEY_NUMBER)));
                 shot.setFromLatitude    (c.getDouble(c.getColumnIndex(KEY_FROM_LATITUDE)));
                 shot.setFromlongitude   (c.getDouble(c.getColumnIndex(KEY_FROM_LONGITUDE)));
                 shot.setFromX           (c.getInt   (c.getColumnIndex(KEY_FROM_X)));
@@ -951,6 +970,7 @@ public class DatabaseHandlerInternal extends SQLiteOpenHelper{
         values.put(FOREIGN_KEY_GAME,    shot.getGameId());
         values.put(FOREIGN_KEY_HOLE,    shot.getHoleId());
         values.put(FOREIGN_KEY_CLUB,    shot.getClubId());
+        values.put(KEY_NUMBER,          shot.getNumber());
         values.put(KEY_FROM_LATITUDE,   shot.getFromLatitude());
         values.put(KEY_FROM_LONGITUDE,  shot.getFromlongitude());
         values.put(KEY_FROM_X,          shot.getFromX());
