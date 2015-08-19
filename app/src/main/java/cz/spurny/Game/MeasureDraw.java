@@ -245,7 +245,7 @@ public class MeasureDraw {
                 continue;
 
             /* Filtrujeme body za aktualnim bodem */
-            if (p.getPixelY() >= actualPoint.getPixelY() )
+            if (p.getPixelY() >= actualPoint.getPixelY() - canvasHeight * 0.15 )
                 continue;
 
             /* TODO tady mohou byt pripadne filtry na to co se bude zobrazovat */

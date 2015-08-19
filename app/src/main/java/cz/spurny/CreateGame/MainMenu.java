@@ -15,12 +15,10 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 
-import java.io.IOException;
-import java.sql.SQLException;
-
 import cz.spurny.DatabaseInternal.DatabaseHandlerInternal;
 import cz.spurny.DatabaseResort.DatabaseHandlerResort;
 import cz.spurny.Dialogs.ApplicationTerminate;
+import cz.spurny.Dialogs.NoDatabaseResort;
 import cz.spurny.Player.CreatePlayer;
 import cz.spurny.Settings.Settings;
 import cz.spurny.Settings.UserPreferences;
@@ -42,28 +40,6 @@ public class MainMenu extends ActionBarActivity {
 
         /* Pripojeni interni databaze */
         DatabaseHandlerInternal dbi = new DatabaseHandlerInternal(this);
-
-
-        DatabaseHandlerResort myDbHelper = new DatabaseHandlerResort(this);
-
-        if (myDbHelper.checkDataBase()) {
-            System.out.println("Databaze existuje");
-        } else {
-            System.out.println("Databaze neexistuje");
-        }
-
-        try {
-            myDbHelper.createDataBase("/mnt/sdcard/golfStatDatabaseResort");
-        } catch (IOException ioe) {
-
-        }
-
-        try {
-            myDbHelper.openDataBase();
-        }catch(SQLException sqle){
-
-        }
-
 
         /* Prvni zapnuti aplikace */
         if (dbi.getMainPlayer() == null ) { firstStartOfApplication(); }
@@ -96,13 +72,18 @@ public class MainMenu extends ActionBarActivity {
         /* Nova hra */
         bNewGame.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) { startActivity(iNewGame); }
+            public void onClick(View v) {
+                /* Kontrola zdali existuje database resortu */
+                databaseResort(iNewGame);
+            }
         });
 
         /* Nastaveni */
         bSettings.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) { startActivity(iSettings); }
+            public void onClick(View v) {
+                startActivity(iSettings);
+            }
         });
 
     }
@@ -121,6 +102,16 @@ public class MainMenu extends ActionBarActivity {
     public void createPlayer() {
         Intent iCreatePlayer = new Intent(this, CreatePlayer.class);
         startActivity(iCreatePlayer);
+    }
+
+    /** Kotrola zdali existuje databaze resortu **/
+    public void databaseResort(Intent iNewGame) {
+        DatabaseHandlerResort myDbHelper = new DatabaseHandlerResort(this);
+
+        if (!myDbHelper.checkDataBase())
+            NoDatabaseResort.dialog(context).show();
+        else
+            startActivity(iNewGame);
     }
 
     /** Reakce na zmacknuti tlacitka "zpet" - u hlavniho menu povede k uzavreni aplikace **/

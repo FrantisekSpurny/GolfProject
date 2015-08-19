@@ -172,5 +172,37 @@
     <string name="Settings_string_database">Nastavení databází</string>
     <string name="Settings_string_loadResortDatabase">Import databáze resortu</string>
     <string name="Settings_string_reaload">Vymazání interní databáze</string>
+    <string name="RealoadInternalDatabase_string_title">Opravdu chete vymazat všechny data interní databáze (zaznamenané hry,uživatelské profily,hole,atd.) ?</string>
+    <string name="InternalDatabaseRemoved_string_toast">Interní databáze odstraněna úspěšně</string>
+    <string name="DatabaseImportSuccessful_string_toast">Databáze načtena úspěšně</string>
+    <string name="ReloadResortDatabase_string_title">Opravdu chcete nahradit stávající databázi resortu?</string>
+    <string name="NoDabaseResort_string_title">Nebyla načtena databáze resortu, nelze vytvořit novou hru.</string>
+    <string name="NoDabaseResort_string_settings">Nastavení</string>
+    <string name="NoPlaymates_string_toast">Hra má pouze jednoho hráče</string>
+    <string name="ScoreCardMenu_string_player">Změna hráče</string>
+    <string name="SaveGameResults_string_saveGame">Vyhodnotit hru</string>
+    <string name="SaveGameResultsListHeader_string_player">Hráč</string>
+    <string name="SaveGameResultsListHeader_string_played">Zahráno jamek</string>
+    <string name="SaveGameResults_string_title">Vyhodnocení hry</string>
+    <string name="ScoreNotSetForAll_string_saveGame">Uložit hru</string>
+    <string name="ScoreNotSetForAll_string_saveMain">Zaznamenat hru pro hlavní profil</string>
+    <string name="ScoreNotSetForAll_string_title">Zaznamenat hru</string>
+    <string name="GameRecordedSuccessfuly_string_toast">Hra úspěšně zaznamenána</string>
+    <string name="GameSavedSuccessfully_string_toast">Hra uložena úspěšně</string>
+    <string name="ScoreNotSetForAll_string_saveIncomplete">Zaznamenat neúplnou hru</string>
+    <string name="RecordGameDialog_string_title">Opravdu si přejete zaznamenat tuto hru (nelze dále editovat) ?</string>
+    <string name="SaveGame_string_title">Přejete si tuto hru uložit ?</string>
+    <string name="RecordGame_string_title">Záznam hry</string>
+    <string name="RecordGame_string_note">Poznámka</string>
+    <string name="RecordGame_string_weather">Počasí</string>
+    <string name="RecordGame_string_windSpecifiaction">Směr větru</string>
+    <string name="Weather_string_sunny">Jasno</string>
+    <string name="Weather_string_partlyCloudy">Polojasno</string>
+    <string name="Weather_string_cloudy">Oblačno</string>
+    <string name="Weather_string_rain">Déšť</string>
+    <string name="Weather_string_thunder">Bouřka</string>
+    <string name="RecordGame_string_windSpeed">Rychlost větru</string>
+    <string name="RecordGame_string_courseRoughness">Tvrdost hřistě</string>
+    <string name="RecordGame_string_recordGame">Zaznamenat hru</string>
 
 </resources>

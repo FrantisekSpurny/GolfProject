@@ -34,7 +34,10 @@ import cz.spurny.DatabaseResort.DatabaseHandlerResort;
 import cz.spurny.DatabaseResort.Hole;
 import cz.spurny.DatabaseResort.Tee;
 import cz.spurny.Dialogs.CaptureShotPointSelectionMethod;
+import cz.spurny.Dialogs.CurrentScorePlayerList;
 import cz.spurny.Dialogs.DisplayScoreCardAbout;
+import cz.spurny.Dialogs.ScoreCardPlayerList;
+import cz.spurny.Toasts.NoPlaymates;
 
 public class ScoreCard extends ActionBarActivity {
 
@@ -95,6 +98,16 @@ public class ScoreCard extends ActionBarActivity {
         switch (item.getItemId()) {
             case R.id.ScoreCardMenu_item_about: // Legenda
                 DisplayScoreCardAbout.dialog(context).show();
+                return true;
+            case R.id.ScoreCardMenu_item_player: // Zmena hrace
+
+                if (dbi.getAllPlaymatesOfGame(game.getId()).size() == 0) {
+                    NoPlaymates.getToast(context).show();
+                    return true;
+                }
+
+                ScoreCardPlayerList.dialog(context, dbi.getAllPlaymatesOfGame(game.getId())).show();
+
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -285,5 +298,67 @@ public class ScoreCard extends ActionBarActivity {
             default: //jine
                 return getResources().getDrawable(R.drawable.other);
         }
+    }
+
+    /** Formatovani textu pro vypis jednoho hrace **/
+    public String formatStringPlayer(Player p) {
+        return p.getNickname() + " (" + p.getName() + " " + p.getSurname() + ")";
+    }
+
+    /*** GETTERS AND SETTERS ***/
+    public Game getGame() {
+        return game;
+    }
+
+    public void setGame(Game game) {
+        this.game = game;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+
+    public List<Hole> getHoles() {
+        return holes;
+    }
+
+    public void setHoles(List<Hole> holes) {
+        this.holes = holes;
+    }
+
+    public TableLayout getTlScoreCard() {
+        return tlScoreCard;
+    }
+
+    public void setTlScoreCard(TableLayout tlScoreCard) {
+        this.tlScoreCard = tlScoreCard;
+    }
+
+    public Context getContext() {
+        return context;
+    }
+
+    public void setContext(Context context) {
+        this.context = context;
+    }
+
+    public DatabaseHandlerInternal getDbi() {
+        return dbi;
+    }
+
+    public void setDbi(DatabaseHandlerInternal dbi) {
+        this.dbi = dbi;
+    }
+
+    public DatabaseHandlerResort getDbr() {
+        return dbr;
+    }
+
+    public void setDbr(DatabaseHandlerResort dbr) {
+        this.dbr = dbr;
     }
 }

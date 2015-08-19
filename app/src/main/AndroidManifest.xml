@@ -9,8 +9,6 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
             android:name=".MainMenu"
@@ -64,6 +62,11 @@
         <activity
             android:name="cz.spurny.Game.ScoreCard"
             android:label="@string/ScoreCard_string_title" >
+        </activity>
+        <activity android:name="ar.com.daidalos.afiledialog.FileChooserActivity" />
+        <activity
+            android:name="cz.spurny.Game.RecordGame"
+            android:label="@string/RecordGame_string_title" >
         </activity>
     </application>
 

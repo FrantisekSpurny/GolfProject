@@ -520,6 +520,9 @@ public class DatabaseHandlerInternal extends SQLiteOpenHelper{
         if (c != null)
             c.moveToFirst();
 
+        if (c.getCount() == 0)
+            return null;
+
         Player player = new Player();
         player.setId(c.getInt(c.getColumnIndex(PRIMARY_KEY_PLAYER)));
         player.setName(c.getString(c.getColumnIndex(KEY_NAME)));

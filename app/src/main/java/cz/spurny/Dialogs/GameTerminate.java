@@ -16,9 +16,12 @@ import android.content.Intent;
 
 import cz.spurny.CreateGame.MainMenu;
 import cz.spurny.CreateGame.R;
+import cz.spurny.DatabaseInternal.Game;
+import cz.spurny.Settings.UserPreferences;
+import cz.spurny.Toasts.GameRecordedSuccessfully;
 
 public class GameTerminate {
-    public static Dialog dialog(final Context context) {
+    public static Dialog dialog(final Context context,final Game game) {
 
         Dialog dialog = null;
 
@@ -31,10 +34,14 @@ public class GameTerminate {
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
 
-                                /* Ukonceni aktualni aktivity a navrat do hlavniho menu */
-                                Intent iMainMenu = new Intent(context,MainMenu.class);
-                                ((Activity) context).finish();
-                                context.startActivity(iMainMenu);
+                                if (!UserPreferences.getSaveDialogShow(context)) {
+                                    SaveGame.dialog(context, game).show();
+                                    dialog.cancel();
+                                } else {
+                                    /* Prechod do hlavniho menu */
+                                    Intent iMainMenu = new Intent(context,MainMenu.class);
+                                    context.startActivity(iMainMenu);
+                                }
                             }
                         })
 

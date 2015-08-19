@@ -36,6 +36,7 @@ import cz.spurny.DatabaseResort.Tee;
 import cz.spurny.DatabaseResort.View;
 import cz.spurny.Dialogs.CaptureShotPointSelectionMethod;
 import cz.spurny.Dialogs.MeasureDrawPointSelectionMethod;
+import cz.spurny.Dialogs.SaveGameResults;
 import cz.spurny.Dialogs.SelectBallPosition;
 import cz.spurny.Dialogs.SelectClub;
 import cz.spurny.Dialogs.SelectFromAreaType;
@@ -347,7 +348,7 @@ public class GameOnHole extends ActionBarActivity {
         infoPanelBasic();
 
         /* Zobrazeni hlavniho menu */
-        visibilityMainMenu       (true);
+        visibilityMainMenu(true);
         visibilityCaptureShotMenu(false);
     }
 
@@ -362,7 +363,7 @@ public class GameOnHole extends ActionBarActivity {
         initMenuItems(menu);
 
         /* Zobrazeni hlavniho menu a schovani submenu zadavani rany */
-        visibilityMainMenu       (true);
+        visibilityMainMenu(true);
         visibilityCaptureShotMenu(false);
 
         return true;
@@ -413,6 +414,9 @@ public class GameOnHole extends ActionBarActivity {
                 return true;
             case R.id.GameOnHoleMenu_item_scoreCard:
                 scoreCard();
+                return true;
+            case R.id.GameOnHoleMenu_item_saveGame:
+                saveGame();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -1044,7 +1048,7 @@ public class GameOnHole extends ActionBarActivity {
             @Override
             public void onClick(android.view.View v) {
                 if (actualInfoPanel == INFO_PANEL_CAPTURE_SHOT && !shotCaptureDraw.isLastShot())
-                    SelectBallPosition.dialog(context,shotCaptureDraw.getActualShot()).show();
+                    SelectBallPosition.dialog(context, shotCaptureDraw.getActualShot()).show();
             }
         });
 
@@ -1061,7 +1065,7 @@ public class GameOnHole extends ActionBarActivity {
             @Override
             public void onClick(android.view.View v) {
                 if (actualInfoPanel == INFO_PANEL_CAPTURE_SHOT && !shotCaptureDraw.isLastShot())
-                    SelectSpecification.dialog(context,shotCaptureDraw.getActualShot()).show();
+                    SelectSpecification.dialog(context, shotCaptureDraw.getActualShot()).show();
             }
         });
     }
@@ -1112,6 +1116,16 @@ public class GameOnHole extends ActionBarActivity {
         iScoreCard.putExtra("EXTRA_SCORE_CARD_IDGAME", game.getId());
         startActivity(iScoreCard);
     }
+
+    /*** ULOZENI HRY ***/
+
+    /** Pred ulozenim hry bude hrac upozornen pokud neni hra dohrana **/
+    public void saveGame() {
+
+        /* Dialog zobrazujici pocet zahranych jamek jednotlivimi hraci */
+        SaveGameResults.dialog(context,game,dbi).show();
+    }
+
 
     /*** GETTERS AND SETTERS ***/
     public int getActualInfoPanel() {

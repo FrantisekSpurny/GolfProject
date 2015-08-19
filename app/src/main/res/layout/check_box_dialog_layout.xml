@@ -8,7 +8,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/ActivateGps_string_dialogCheckBox"
-        android:id="@+id/ActivateGps_checkBox_neverShowAgain"
+        android:id="@+id/CheckBoxDialog_checkBox_neverShowAgain"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"

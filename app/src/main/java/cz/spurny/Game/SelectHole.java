@@ -21,6 +21,7 @@ import java.util.List;
 import cz.spurny.Calculations.DistanceCalculations;
 import cz.spurny.CreateGame.R;
 import cz.spurny.DatabaseInternal.DatabaseHandlerInternal;
+import cz.spurny.DatabaseInternal.Game;
 import cz.spurny.DatabaseInternal.Player;
 import cz.spurny.DatabaseResort.Hole;
 import cz.spurny.Dialogs.ApplicationTerminate;
@@ -107,7 +108,12 @@ public class SelectHole extends ActionBarActivity {
     @Override
     public void onBackPressed()
     {
-        GameTerminate.dialog(this).show();
+        /* Ziskani obejktu hry */
+        DatabaseHandlerInternal dbi = new DatabaseHandlerInternal(context);
+        Game game = dbi.getGame(gameId);
+        dbi.close();
+
+        GameTerminate.dialog(this,game).show();
     }
 
     @Override

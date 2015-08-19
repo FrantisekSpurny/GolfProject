@@ -28,8 +28,8 @@ public class ActivateGps {
 
         /* Tvorba pohledu obsahujiciho "checkbox" ktery slouzi pro zjisteni zdali chce uzivatel
            nadale vidat tento dialog ci ne */
-        View checkBoxView = View.inflate(context, R.layout.activate_gps_check_box_layout, null);
-        CheckBox checkBox = (CheckBox) (checkBoxView.findViewById(R.id.ActivateGps_checkBox_neverShowAgain));
+        View checkBoxView = View.inflate(context, R.layout.check_box_dialog_layout, null);
+        CheckBox checkBox = (CheckBox) (checkBoxView.findViewById(R.id.CheckBoxDialog_checkBox_neverShowAgain));
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
             @Override
