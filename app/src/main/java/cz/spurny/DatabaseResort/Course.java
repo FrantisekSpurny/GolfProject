@@ -64,5 +64,5 @@ public class Course {
     public void setPar(int par) {
         this.par = par;
     }
-    
+
 }

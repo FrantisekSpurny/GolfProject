@@ -12,6 +12,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -25,7 +27,9 @@ import cz.spurny.DatabaseInternal.Game;
 import cz.spurny.DatabaseInternal.Player;
 import cz.spurny.DatabaseResort.Hole;
 import cz.spurny.Dialogs.ApplicationTerminate;
+import cz.spurny.Dialogs.CaptureShotPointSelectionMethod;
 import cz.spurny.Dialogs.GameTerminate;
+import cz.spurny.Dialogs.SaveGameResults;
 
 public class SelectHole extends ActionBarActivity {
 
@@ -37,6 +41,9 @@ public class SelectHole extends ActionBarActivity {
 
     /* Pole obsahujici vzdalenosti jednotlivych jamek */
     double[] holeLengthArray;
+
+    /* Pole obsahujici osobni par hrace */
+    int[] personalPar;
 
     /* Prvky GUI */
     ListView lvHoles;
@@ -63,6 +70,7 @@ public class SelectHole extends ActionBarActivity {
         Intent iPrevActivity = getIntent();
         gameId          = iPrevActivity.getLongExtra("EXTRA_SELECT_HOLE_IDGAME", -1);
         holeLengthArray = iPrevActivity.getDoubleArrayExtra("EXTRA_SELECT_HOLE_LENGHT_ARRAY");
+        personalPar     = iPrevActivity.getIntArrayExtra("EXTRA_SELECT_HOLE_PERSONAL_PAR");
 
         /* Pripojeni prvku GUI */
         lvHoles = (ListView) findViewById(R.id.SelectHole_listView_holesList);
@@ -99,6 +107,7 @@ public class SelectHole extends ActionBarActivity {
                 iGameOnHole.putExtra("EXTRA_GAME_ON_HOLE_IDHOLE",holes.get(arg2).getId());
                 iGameOnHole.putExtra("EXTRA_GAME_ON_HOLE_LENGHT_ARRAY",holeLengthArray);
                 iGameOnHole.putExtra("EXTRA_GAME_ON_HOLE_INDEX",arg2);
+                iGameOnHole.putExtra("EXTRA_GAME_ON_HOLE_PERSONAL_PAR",personalPar);
                 startActivity(iGameOnHole);
             }
         });
@@ -116,8 +125,33 @@ public class SelectHole extends ActionBarActivity {
         GameTerminate.dialog(this,game).show();
     }
 
+    /** Zobrazeni menu nabidky **/
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        return false;
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.select_hole_menu, menu);
+
+        return true;
     }
+
+    /** Reakce na kliknuti na polozku menu **/
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.SelectHoleMenu_item_saveGame:
+
+                /* Ziskani obejktu hry */
+                DatabaseHandlerInternal dbi = new DatabaseHandlerInternal(context);
+                Game game = dbi.getGame(gameId);
+                dbi.close();
+
+                /* Dialog zobrazujici pocet zahranych jamek jednotlivimi hraci */
+                SaveGameResults.dialog(context, game, dbi).show();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
 }

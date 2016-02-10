@@ -19,9 +19,11 @@ import cz.spurny.DatabaseInternal.DatabaseHandlerInternal;
 import cz.spurny.DatabaseResort.DatabaseHandlerResort;
 import cz.spurny.Dialogs.ApplicationTerminate;
 import cz.spurny.Dialogs.NoDatabaseResort;
+import cz.spurny.LoadGame.SelectSavedGame;
 import cz.spurny.Player.CreatePlayer;
 import cz.spurny.Settings.Settings;
 import cz.spurny.Settings.UserPreferences;
+import cz.spurny.Toasts.NoSavedGames;
 
 public class MainMenu extends ActionBarActivity {
 
@@ -40,6 +42,9 @@ public class MainMenu extends ActionBarActivity {
 
         /* Pripojeni interni databaze */
         DatabaseHandlerInternal dbi = new DatabaseHandlerInternal(this);
+
+        /* Nastaveni titulku */
+        setTitle(this.getString(R.string.MainMenu_string_title));
 
         /* Prvni zapnuti aplikace */
         if (dbi.getMainPlayer() == null ) { firstStartOfApplication(); }
@@ -65,8 +70,6 @@ public class MainMenu extends ActionBarActivity {
 
         /* Intenty - slouzi k volani jinych aktivit */
         final Intent iNewGame      = new Intent(this,SelectResort.class);
-        //Intent iSavedGames   = new Intent(this,SavedGames.class);
-        //Intent iStats        = new Intent(this,Statistics.class);
         final Intent iSettings     = new Intent(this,Settings.class);
 
         /* Nova hra */
@@ -75,6 +78,14 @@ public class MainMenu extends ActionBarActivity {
             public void onClick(View v) {
                 /* Kontrola zdali existuje database resortu */
                 databaseResort(iNewGame);
+            }
+        });
+
+        /* Ulozene hry */
+        bSavedGames.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                savedGames();
             }
         });
 
@@ -113,6 +124,24 @@ public class MainMenu extends ActionBarActivity {
         else
             startActivity(iNewGame);
     }
+
+    /** Prechod na aktivity ulozenych her **/
+    public void savedGames() {
+
+        /* Pripojeni databaze */
+        DatabaseHandlerInternal dbi = new DatabaseHandlerInternal(context);
+
+        /* Nebyly ulozeny zadne hry */
+        if (dbi.getAllSavedGames() == null)
+            NoSavedGames.getToast(context).show();
+        else {
+            Intent iSavedGames = new Intent(context, SelectSavedGame.class);
+            startActivity(iSavedGames);
+        }
+
+        dbi.close();
+    }
+
 
     /** Reakce na zmacknuti tlacitka "zpet" - u hlavniho menu povede k uzavreni aplikace **/
     @Override

@@ -1,5 +1,7 @@
 package cz.spurny.DatabaseResort;
 
+import java.util.Comparator;
+
 /**
  * Objekt: Hole.java
  * Popis:  Objekt pro uchovani jedne jamky.

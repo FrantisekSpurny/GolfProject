@@ -17,6 +17,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import java.util.ArrayList;
 import java.util.List;
 
+import cz.spurny.DatabaseResort.Course;
 import cz.spurny.DatabaseResort.DatabaseHandlerResort;
 import cz.spurny.DatabaseResort.Hole;
 import cz.spurny.DatabaseResort.Resort;
@@ -42,6 +43,9 @@ public class DatabaseHandlerInternal extends SQLiteOpenHelper{
     private static final String TABLE_CLUB             = "club";
     private static final String TABLE_SCORE            = "score";
     private static final String TABLE_SHOT             = "shot";
+    private static final String TABLE_SAVED_GAME       = "saved_game";
+    private static final String TABLE_RECORDED_GAME    = "recorded_game";
+
 
     /** Jednotlive atributy tabulek **/
 
@@ -110,6 +114,14 @@ public class DatabaseHandlerInternal extends SQLiteOpenHelper{
     private static final String KEY_DEVIATION               = "deviation";
     private static final String KEY_BALL_POSITION           = "ball_position";
     private static final String KEY_SPECIFICATION           = "specification";
+
+    /* Tabulka ULOZENE_HRY */
+    private static final String PRIMARY_KEY_SAVED_GAME      = "_id_saved_game";
+    //private static final String FOREIGN_KEY_GAME          = "id_game";
+
+    /* Tabulka ZAZNAMENANE_HRY */
+    private static final String PRIMARY_KEY_RECORDED_GAME   = "_id_recorded_game";
+    //private static final String FOREIGN_KEY_GAME          = "id_game";
 
     /** Prikazy pro tvorbu tabulek **/
 
@@ -185,6 +197,17 @@ public class DatabaseHandlerInternal extends SQLiteOpenHelper{
             + KEY_BALL_POSITION                 + " INTEGER,"
             + KEY_SPECIFICATION                 + " INTEGER" + ")";
 
+    /* Tabulka ULOZENE_HRY */
+    private static final String CREATE_TABLE_SAVED_GAME = "CREATE TABLE " + TABLE_SAVED_GAME
+            + "(" + PRIMARY_KEY_SAVED_GAME      + " INTEGER PRIMARY KEY,"
+            + FOREIGN_KEY_GAME                  + " INTEGER" + ")";
+
+    /* Tabulka ZAZNAMENANE_HRY */
+    private static final String CREATE_TABLE_RECORDED_GAME = "CREATE TABLE " + TABLE_RECORDED_GAME
+            + "(" + PRIMARY_KEY_RECORDED_GAME   + " INTEGER PRIMARY KEY,"
+            + FOREIGN_KEY_GAME                  + " INTEGER" + ")";
+
+
     /** Tvorba databaze **/
 
     public DatabaseHandlerInternal(Context context) {
@@ -203,6 +226,8 @@ public class DatabaseHandlerInternal extends SQLiteOpenHelper{
         db.execSQL(CREATE_TABLE_CLUB);
         db.execSQL(CREATE_TABLE_SCORE);
         db.execSQL(CREATE_TABLE_SHOT);
+        db.execSQL(CREATE_TABLE_SAVED_GAME);
+        db.execSQL(CREATE_TABLE_RECORDED_GAME);
     }
 
     @Override
@@ -216,6 +241,8 @@ public class DatabaseHandlerInternal extends SQLiteOpenHelper{
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_CLUB);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_SCORE);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_SHOT);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_SAVED_GAME);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_RECORDED_GAME);
 
 		/* Vytvoreni tabulek nove verze */
         onCreate(db);
@@ -280,6 +307,24 @@ public class DatabaseHandlerInternal extends SQLiteOpenHelper{
 
         dbr.close();
         return resort;
+    }
+
+    /* upraveni polozky tabulky hra */
+    public int updateGame(Game game) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(KEY_DATE, game.getDate());
+        values.put(KEY_DESCRIPTION, game.getDescription());
+        values.put(KEY_WEATHER, game.getWeather());
+        values.put(KEY_WIND, game.getWind());
+        values.put(KEY_WIND_POWER, game.getWindPower());
+        values.put(KEY_COURSE_TOUGHNESS, game.getCourseToughness());
+
+	    /* aktualizace radku tabulky hole */
+        return db.update(TABLE_GAME, values, PRIMARY_KEY_GAME + " = ?",
+                new String[]{String.valueOf(game.getId())});
     }
 
     /** Tabulka HRA_HRISTE **/
@@ -361,6 +406,25 @@ public class DatabaseHandlerInternal extends SQLiteOpenHelper{
     /* Ziskani poctu hrist dane hry */
     public int getNumOfGameCourses(int gameId) {
         return getAllGameCourseOfGame(gameId).size();
+    }
+
+    /* Ziskani vsech hrist hry */
+    public List<Course> getAllCoursesOfGame(int gameId) {
+
+        List<GameCourse> gameCourses = getAllGameCourseOfGame(gameId);
+        DatabaseHandlerResort dbr = new DatabaseHandlerResort(context);
+        List<Course> courses = new ArrayList<>();
+
+        if (gameCourses.size() == 1)
+            courses.add(dbr.getCourse(gameCourses.get(0).getIdCourse()));
+        else {
+            courses.add(dbr.getCourse(gameCourses.get(0).getIdCourse()));
+            courses.add(dbr.getCourse(gameCourses.get(1).getIdCourse()));
+        }
+
+        dbr.close();
+
+        return courses;
     }
 
     /** Tabulka HRA_HRAC **/
@@ -642,7 +706,7 @@ public class DatabaseHandlerInternal extends SQLiteOpenHelper{
         SQLiteDatabase db = this.getWritableDatabase(); // ziskani databaze pro zapis
 
         db.delete(TABLE_CLUB, PRIMARY_KEY_CLUB + " = ?",
-                new String[] { String.valueOf(idClub) });
+                new String[]{String.valueOf(idClub)});
 
     }
 
@@ -742,7 +806,7 @@ public class DatabaseHandlerInternal extends SQLiteOpenHelper{
         SQLiteDatabase db = this.getWritableDatabase(); // ziskani databaze pro zapis
 
         ContentValues values = new ContentValues();
-        values.put(FOREIGN_KEY_GAME  ,score.getGameId());
+        values.put(FOREIGN_KEY_GAME, score.getGameId());
         values.put(FOREIGN_KEY_HOLE, score.getHoleId());
         values.put(FOREIGN_KEY_PLAYER, score.getPlayerId());
         values.put(KEY_SCORE, score.getScore());
@@ -774,11 +838,11 @@ public class DatabaseHandlerInternal extends SQLiteOpenHelper{
         values.put(KEY_TO_LONGITUDE,    shot.getToLongitude());
         values.put(KEY_TO_X,            shot.getToX());
         values.put(KEY_TO_Y,            shot.getToY());
-        values.put(KEY_TO_AREA_TYPE,    shot.getToAreaType());
-        values.put(KEY_DISTANCE,        shot.getDistance());
-        values.put(KEY_DEVIATION,       shot.getDeviation());
-        values.put(KEY_BALL_POSITION,   shot.getBallPosition());
-        values.put(KEY_SPECIFICATION,   shot.getSpecification());
+        values.put(KEY_TO_AREA_TYPE, shot.getToAreaType());
+        values.put(KEY_DISTANCE, shot.getDistance());
+        values.put(KEY_DEVIATION, shot.getDeviation());
+        values.put(KEY_BALL_POSITION, shot.getBallPosition());
+        values.put(KEY_SPECIFICATION, shot.getSpecification());
 
 		/* vlozeni radku do tabulky */
         long idShot = db.insert(TABLE_SHOT, null, values);
@@ -1003,4 +1067,146 @@ public class DatabaseHandlerInternal extends SQLiteOpenHelper{
                 new String[] { String.valueOf(idShot) });
 
     }
+
+    /* Tabulka ULOZENE_HRY */
+
+    /* Tvorba nove vazby hry na hrace */
+    public long createSavedGame (SavedGame savedGame) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(FOREIGN_KEY_GAME, savedGame.getGameId());
+
+		/* vlozeni radku do tabulky */
+        long idSavedGame = db.insert(TABLE_SAVED_GAME, null, values);
+
+		/* navratova hodnota je ID nove polozky */
+        return idSavedGame;
+    }
+
+    /* Ziskani vsech polozek tabulky HraHrac v ramci jedne hry */
+    public List<SavedGame> getAllSavedGames() {
+
+        List<SavedGame> savedGames = new ArrayList<>();
+        String selectQuery = "SELECT  * FROM " + TABLE_SAVED_GAME;
+
+        /* Ziskani databaze pro cteni */
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery, null);
+
+	    /* Tabulka je prazdna */
+        if (c.getCount() <= 0) { return null; }
+
+	    /* Postupny pruchod vsemi radky tabulky a jejich ulozeni do seznamu */
+        if (c.moveToFirst()) { // presun na prvni prvek
+            do {
+                SavedGame savedGame = new SavedGame();
+                savedGame.setId    (c.getInt(c.getColumnIndex(PRIMARY_KEY_SAVED_GAME)));
+                savedGame.setGameId(c.getInt(c.getColumnIndex(FOREIGN_KEY_GAME)));
+
+	            /* vlozeni objektu do seznamu */
+                savedGames.add(savedGame);
+            } while (c.moveToNext()); // presun na dalsi prvek
+        }
+
+        /* uvolneni kurzoru */
+        c.close();
+
+        return savedGames;
+    }
+
+    public boolean isGameSaved(int gameId) {
+
+        List<SavedGame> savedGames = new ArrayList<>();
+        String selectQuery = "SELECT  * FROM " + TABLE_SAVED_GAME
+                + " WHERE " + FOREIGN_KEY_GAME + " = " + gameId;
+
+        /* Ziskani databaze pro cteni */
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery, null);
+
+	    /* Tabulka je prazdna */
+        if (c.getCount() <= 0) return false;
+        else                   return true;
+    }
+
+    public SavedGame getSavedGame (int gameId) {
+
+        List<SavedGame> savedGames = new ArrayList<>();
+        String selectQuery = "SELECT  * FROM " + TABLE_SAVED_GAME
+                + " WHERE " + FOREIGN_KEY_GAME + " = " + gameId;
+
+        /* Ziskani databaze pro cteni */
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        if (c != null)
+            c.moveToFirst();
+
+        SavedGame savedGame = new SavedGame();
+        savedGame.setId    (c.getInt(c.getColumnIndex(PRIMARY_KEY_SAVED_GAME)));
+        savedGame.setGameId(c.getInt(c.getColumnIndex(FOREIGN_KEY_GAME)));
+
+        /* uvolneni kurzoru */
+        c.close();
+
+        return savedGame;
+    }
+
+    public void deleteSavedGame(long idSavedGame) {
+
+        SQLiteDatabase db = this.getWritableDatabase(); // ziskani databaze pro zapis
+
+        db.delete(TABLE_SAVED_GAME, PRIMARY_KEY_SAVED_GAME + " = ?",
+                new String[] { String.valueOf(idSavedGame) });
+
+    }
+
+    /* Tabulka ZAZNAMENANE_HRY */
+
+    /* Tvorba nove vazby hry na hrace */
+    public long createRecordedGame (RecordedGame recordedGame) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(FOREIGN_KEY_GAME, recordedGame.getGameId());
+
+		/* vlozeni radku do tabulky */
+        long idRecordedGame = db.insert(TABLE_RECORDED_GAME, null, values);
+
+		/* navratova hodnota je ID nove polozky */
+        return idRecordedGame;
+    }
+
+    /* Ziskani vsech polozek tabulky HraHrac v ramci jedne hry */
+    public List<RecordedGame> getAllRecordedGames() {
+
+        List<RecordedGame> recordedGames = new ArrayList<>();
+        String selectQuery = "SELECT  * FROM " + TABLE_RECORDED_GAME;
+
+        /* Ziskani databaze pro cteni */
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery, null);
+
+	    /* Tabulka je prazdna */
+        if (c.getCount() <= 0) { return null; }
+
+	    /* Postupny pruchod vsemi radky tabulky a jejich ulozeni do seznamu */
+        if (c.moveToFirst()) { // presun na prvni prvek
+            do {
+                RecordedGame recordedGame = new RecordedGame();
+                recordedGame.setId    (c.getInt(c.getColumnIndex(PRIMARY_KEY_RECORDED_GAME)));
+                recordedGame.setGameId(c.getInt(c.getColumnIndex(FOREIGN_KEY_GAME)));
+
+	            /* vlozeni objektu do seznamu */
+                recordedGames.add(recordedGame);
+            } while (c.moveToNext()); // presun na dalsi prvek
+        }
+
+        /* uvolneni kurzoru */
+        c.close();
+
+        return recordedGames;
+    }
+
 }

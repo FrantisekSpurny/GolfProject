@@ -8,6 +8,7 @@ package cz.spurny.GpsApi;
  */
 
 public class GpsCoordinates {
+
     private double latitude;
     private double longitude;
 

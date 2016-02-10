@@ -149,13 +149,14 @@ public class HoleScore extends ActionBarActivity {
     /** Prevzeti hodnot z volajici aktivity a ziskani kontextu **/
     public void getExtras() {
 
-        int idGame,idHole,shotsCount;
+        int idGame,idHole,shotsCount,penaltyShots;
 
         /* Prevzeti hodnot z predchozi aktivity */
         Intent iPrevActivity = getIntent();
-        idGame          = iPrevActivity.getIntExtra("EXTRA_HOLE_SCORE_IDGAME", -1);
-        idHole          = iPrevActivity.getIntExtra("EXTRA_HOLE_SCORE_IDHOLE", -1);
-        shotsCount      = iPrevActivity.getIntExtra("EXTRA_HOLE_SCORE_NUM_OF_SHOTS", -1);
+        idGame               = iPrevActivity.getIntExtra("EXTRA_HOLE_SCORE_IDGAME", -1);
+        idHole               = iPrevActivity.getIntExtra("EXTRA_HOLE_SCORE_IDHOLE", -1);
+        shotsCount           = iPrevActivity.getIntExtra("EXTRA_HOLE_SCORE_NUM_OF_SHOTS", -1);
+        penaltyShots         = iPrevActivity.getIntExtra("EXTRA_HOLE_SCORE_PENALTY_SHOTS", -1);
 
         /* Naplneni atributu */
         game                = dbi.getGame(idGame);
@@ -163,9 +164,9 @@ public class HoleScore extends ActionBarActivity {
         holeList            = dbi.getAllHolesOfGame(idGame);
         playerList          = dbi.getAllPlaymatesOfGame(idGame);
         actualPlayer        = dbi.getPlayer((int) UserPreferences.getMainUserId(context));
-        actualScore         = shotsCount+2;
+        actualScore         = shotsCount+ 2 + penaltyShots;
         actualPuts          = 2;
-        actualPenaltyShots  = 0;
+        actualPenaltyShots  = penaltyShots;
     }
 
     /** Pripojeni prvku GUI **/
@@ -193,7 +194,7 @@ public class HoleScore extends ActionBarActivity {
         initTabHost(getNumberList(0, 6), getNumberList(0, 6), thPuts);
 
         /* Trestne rany */
-        initTabHost(getNumberList(0,5)     ,getNumberList(0,5)  ,thPenaltyShots);
+        initTabHost(getNumberList(0,5) ,getNumberList(0,5)  ,thPenaltyShots);
     }
 
     /** Inicializace "TabHost" prvku **/
@@ -233,10 +234,33 @@ public class HoleScore extends ActionBarActivity {
         List<String> scoreList = new ArrayList<>();
 
         for (int i = n; i <= m; i++) {
-            scoreList.add(String.valueOf(i));
+            scoreList.add(String.valueOf(i) + scoreName(i));
         }
 
         return scoreList;
+    }
+
+    /* Textovy popis hodnoty score */
+    public String scoreName(int score) {
+
+        int par = actualHole.getPar();
+
+        switch(score-par) {
+            case 0: //Par
+                return " [" + getString(R.string.DisplayScoreCardAbout_string_par) + "]";
+            case -1: //Birdie
+                return " [" + getString(R.string.DisplayScoreCardAbout_string_birdie) + "]";
+            case -2: //Eagle
+                return " [" + getString(R.string.DisplayScoreCardAbout_string_eagle) + "]";
+            case -3: //Albatros
+                return " [" + getString(R.string.DisplayScoreCardAbout_string_albatros) + "]";
+            case 1:  //Bogey
+                return " [" + getString(R.string.DisplayScoreCardAbout_string_bogey) + "]";
+            case 2:  //2 Bogey
+                return " [" + getString(R.string.DisplayScoreCardAbout_string_doubleBogey) + "]";
+            default: //jine
+                return "";
+        }
     }
 
     /** Tvorba seznamu obsahujici ciselne retezce od 1 do n **/
@@ -298,13 +322,7 @@ public class HoleScore extends ActionBarActivity {
 
         Score score = dbi.getScore(actualHole.getId(),actualPlayer.getId(),game.getId());
 
-        /** TODO pokud uz je skore zadano **/
-        //if (score != null)
-
-        /** ELSE **/
-        // else
-
-        thScore       .setCurrentTab(actualScore);
+        thScore       .setCurrentTab(actualScore-1);
         thPuts        .setCurrentTab(actualPuts);
         thPenaltyShots.setCurrentTab(actualPenaltyShots);
     }
@@ -352,7 +370,6 @@ public class HoleScore extends ActionBarActivity {
             actualPenaltyShots = actualPenaltyShots > 0 ? actualPenaltyShots - 1 : actualPenaltyShots;
        }
 
-
         /* Zmena na naaktualni hodnoty */
         thPuts        .setCurrentTab(actualPuts);
         thPenaltyShots.setCurrentTab(actualPenaltyShots);
@@ -360,18 +377,18 @@ public class HoleScore extends ActionBarActivity {
 
     /** Reakce na zmenu poctu patu **/
     public void putsChangeHandler() {
-        while (actualScore < actualPuts + actualPenaltyShots) {
+        while (actualScore <= actualPuts + actualPenaltyShots) {
             actualScore++;
         }
-        thScore.setCurrentTab(actualScore);
+        thScore.setCurrentTab(actualScore-1);
     }
 
-    /** Reakce na zmenu poctu patu **/
+    /** Reakce na zmenu poctu trestnych ran **/
     public void penaltyShotsChangeHandler() {
-        while (actualScore < actualPuts + actualPenaltyShots) {
+        while (actualScore <= actualPuts + actualPenaltyShots) {
             actualScore++;
         }
-        thScore.setCurrentTab(actualScore);
+        thScore.setCurrentTab(actualScore-1);
     }
 
     /*** ULOZENI SKORE ***/

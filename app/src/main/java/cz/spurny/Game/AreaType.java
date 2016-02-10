@@ -21,6 +21,7 @@ public class AreaType {
     public static final int WATER     = 5;
     public static final int BIOZONE   = 6;
     public static final int OUT       = 7;
+    public static final int TEE       = 8;
 
     /** Prevod ciselne konstanty na prislusny retezec **/
     public static String getString(int areaType,Context context) {
@@ -41,6 +42,8 @@ public class AreaType {
                 return context.getString(R.string.AreaType_string_biozone);
             case 7:
                 return context.getString(R.string.AreaType_string_out);
+            case 8:
+                return context.getString(R.string.AreaType_string_tee);
         }
 
         /** Mimo rozsah **/

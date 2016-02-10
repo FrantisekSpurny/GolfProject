@@ -71,7 +71,7 @@ public class CurrentScorePlayerList {
 
                 /** Vypocet noveho score **/
                 ((CurrentScore)context)
-                        .displayScore(ScoreCardCounting.countScorecard(game, players.get(arg2), dbi, dbr));
+                        .displayScore(ScoreCardCounting.countScorecard(game, players.get(arg2), dbi, dbr,context));
 
                 dialog.hide();
             }

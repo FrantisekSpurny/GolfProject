@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <TextView
+        android:id="@+id/SelectSavedGameAdapter_textView_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="1."/>
+
+    <TextView
+        android:id="@+id/SelectSavedGameAdapter_textView_dateTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@+id/SelectSavedGameAdapter_textView_number"
+        android:text="@string/SelectSavedGameAdapter_string_date"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:id="@+id/SelectSavedGameAdapter_textView_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@+id/SelectSavedGameAdapter_textView_dateTitle"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:id="@+id/SelectSavedGameAdapter_textView_resortTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/SelectSavedGameAdapter_textView_dateTitle"
+        android:layout_below="@+id/SelectSavedGameAdapter_textView_dateTitle"
+        android:text="@string/SelectSavedGameAdapter_string_resort"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/SelectSavedGameAdapter_textView_resort"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/SelectSavedGameAdapter_textView_resortTitle"
+        android:layout_alignBottom="@+id/SelectSavedGameAdapter_textView_resortTitle"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@+id/SelectSavedGameAdapter_textView_resortTitle"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/SelectSavedGameAdapter_string_courses"
+        android:id="@+id/SelectSavedGameAdapter_textView_coursesTitle"
+        android:layout_below="@+id/SelectSavedGameAdapter_textView_resortTitle"
+        android:layout_alignLeft="@+id/SelectSavedGameAdapter_textView_resortTitle"
+        android:layout_alignStart="@+id/SelectSavedGameAdapter_textView_resortTitle" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/SelectSavedGameAdapter_textView_courses"
+        android:layout_below="@+id/SelectSavedGameAdapter_textView_resort"
+        android:layout_alignLeft="@+id/SelectSavedGameAdapter_textView_resort"
+        android:layout_alignStart="@+id/SelectSavedGameAdapter_textView_resort" />
+
+</RelativeLayout>

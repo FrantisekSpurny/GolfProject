@@ -91,6 +91,7 @@ public class GameOnHole extends ActionBarActivity {
     /** Pole obsahujici vzdalenosti jednotlivych jamek a pozice aktualni jamky **/
     double[] holeLengthArray;
     int      holeIndex;
+    int[]    personalPar;
 
     /** Atributy hra,jamka,hriste,odpaliste,zobrazeni,body,aktualni rana **/
     private Game        game;
@@ -154,6 +155,7 @@ public class GameOnHole extends ActionBarActivity {
         Intent iSelectHole = new Intent(this,SelectHole.class);
         iSelectHole.putExtra("EXTRA_SELECT_HOLE_IDGAME", (long) game.getId());
         iSelectHole.putExtra("EXTRA_SELECT_HOLE_LENGHT_ARRAY", holeLengthArray);
+        iSelectHole.putExtra("EXTRA_SELECT_HOLE_PERSONAL_PAR", personalPar);
         this.startActivity(iSelectHole);
     }
 
@@ -260,6 +262,7 @@ public class GameOnHole extends ActionBarActivity {
         idHole          = iPrevActivity.getIntExtra("EXTRA_GAME_ON_HOLE_IDHOLE", -1);
         holeLengthArray = iPrevActivity.getDoubleArrayExtra("EXTRA_GAME_ON_HOLE_LENGHT_ARRAY");
         holeIndex       = iPrevActivity.getIntExtra("EXTRA_GAME_ON_HOLE_INDEX", -1);
+        personalPar     = iPrevActivity.getIntArrayExtra("EXTRA_GAME_ON_HOLE_PERSONAL_PAR");
 
         game   = dbi.getGame(idGame);
         hole   = dbr.getHole(idHole);
@@ -444,6 +447,7 @@ public class GameOnHole extends ActionBarActivity {
         iPrevHole.putExtra("EXTRA_GAME_ON_HOLE_IDHOLE", holes.get(prevIndex).getId());
         iPrevHole.putExtra("EXTRA_GAME_ON_HOLE_LENGHT_ARRAY", holeLengthArray);
         iPrevHole.putExtra("EXTRA_GAME_ON_HOLE_INDEX", prevIndex);
+        iPrevHole.putExtra("EXTRA_GAME_ON_HOLE_PERSONAL_PAR", personalPar);
         startActivity(iPrevHole);
     }
 
@@ -469,6 +473,7 @@ public class GameOnHole extends ActionBarActivity {
         iNextHole.putExtra("EXTRA_GAME_ON_HOLE_IDHOLE", holes.get(nextIndex).getId());
         iNextHole.putExtra("EXTRA_GAME_ON_HOLE_LENGHT_ARRAY", holeLengthArray);
         iNextHole.putExtra("EXTRA_GAME_ON_HOLE_INDEX", nextIndex);
+        iNextHole.putExtra("EXTRA_GAME_ON_HOLE_PERSONAL_PAR", personalPar);
         startActivity(iNextHole);
     }
 
@@ -553,7 +558,7 @@ public class GameOnHole extends ActionBarActivity {
 
         /* Par / osobni par */
         tvRow3.setText(context.getString(R.string.GameOnHole_string_par));
-        tvRow4.setText(hole.getPar() + "/" + hole.getPar()); //TODO
+        tvRow4.setText(hole.getPar() + "/" + personalPar[holeIndex]);
 
         /* Handicap */
         tvRow5.setText(context.getString(R.string.GameOnHole_string_handicap));
@@ -880,15 +885,19 @@ public class GameOnHole extends ActionBarActivity {
     public void goToHoleScore() {
         Intent iHoleScore =  new Intent(context,HoleScore.class);
 
-        int numberOfShots = dbi.getNumberOfShots(hole.getId(),game.getId());
+        int numberOfShots = 2;
+        int penaltyShots  = 0;
 
-        /* Default hodnota pokud nebyla zadana zadna rana */
-        if (numberOfShots == 0)
-            numberOfShots = 2;
+        List<Shot> shots = dbi.getAllShots(hole.getId(), game.getId());
+        if (shots != null) {
+            numberOfShots = shots.size();
+            penaltyShots  = numberOfPenaltyShots(shots);
+        }
 
         iHoleScore.putExtra("EXTRA_HOLE_SCORE_IDGAME", game.getId());
         iHoleScore.putExtra("EXTRA_HOLE_SCORE_IDHOLE", hole.getId());
         iHoleScore.putExtra("EXTRA_HOLE_SCORE_NUM_OF_SHOTS", numberOfShots);
+        iHoleScore.putExtra("EXTRA_HOLE_SCORE_PENALTY_SHOTS", penaltyShots);
         startActivityForResult(iHoleScore, HOLE_SCORE_REQUEST);
     }
 
@@ -1117,6 +1126,28 @@ public class GameOnHole extends ActionBarActivity {
         startActivity(iScoreCard);
     }
 
+    /** Vypocet poctu trestnych ran ve hre **/
+    public int numberOfPenaltyShots(List<Shot> shots) {
+
+        int penaltyShots = 0;
+
+        /* Zadne rany nebyly zadany */
+        if (shots == null)
+            return 0;
+
+        for (int i = 0; i < shots.size(); i++) {
+            switch (shots.get(i).getBallPosition()) {
+                case BallPosition.NEW_PENALTY:
+                case BallPosition.DROP_PENALTY:
+                case BallPosition.LOST_BALL:
+                    penaltyShots++;
+                    break;
+            }
+        }
+
+        return penaltyShots;
+    }
+
     /*** ULOZENI HRY ***/
 
     /** Pred ulozenim hry bude hrac upozornen pokud neni hra dohrana **/
@@ -1125,7 +1156,6 @@ public class GameOnHole extends ActionBarActivity {
         /* Dialog zobrazujici pocet zahranych jamek jednotlivimi hraci */
         SaveGameResults.dialog(context,game,dbi).show();
     }
-
 
     /*** GETTERS AND SETTERS ***/
     public int getActualInfoPanel() {

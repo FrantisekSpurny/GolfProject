@@ -30,7 +30,7 @@ public class ApplicationTerminate {
                .setPositiveButton(context.getString(R.string.ok),
                    new DialogInterface.OnClickListener() {
                        public void onClick(DialogInterface dialog, int id) {
-                           ((Activity) context).finish();
+                           ((Activity) context).finishAffinity();
                        }
                    })
 

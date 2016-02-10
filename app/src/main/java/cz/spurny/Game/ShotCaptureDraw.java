@@ -75,7 +75,7 @@ public class ShotCaptureDraw {
     private boolean destinationSelection;
 
     /** Drawable **/
-    Drawable dShotDone;
+    Drawable dShotDone,dWater,dOut,dBiozone;
 
     /*** INICIALIZACE ***/
 
@@ -169,25 +169,15 @@ public class ShotCaptureDraw {
     /** Inicilializace "Drawables" (vykreslitelnych objektu) **/
     public void initDrawables() {
         dShotDone = context.getResources().getDrawable(R.drawable.check);
+        dWater    = context.getResources().getDrawable(R.drawable.water);
+        dOut      = context.getResources().getDrawable(R.drawable.out);
+        dBiozone  = context.getResources().getDrawable(R.drawable.biozone);
     }
 
     /** Inicializace prvni rany, uzivatel zatim nic nezadal **/
     public void initFirstShot() {
         Shot shot = new Shot();
         Point pointFrom = dbr.getTeePoint(hole.getId(),tee.getKind());
-
-        /** Bod "od" **/
-        shot.setFromX(pointFrom.getPixelX());
-        shot.setFromY(pointFrom.getPixelY());
-        shot.setFromLatitude(pointFrom.getLatitude());
-        shot.setFromlongitude(pointFrom.getLongitude());
-        shot.setFromAreaType(AreaType.FAIRWAY);
-
-        /** Bod "Kam" **/
-        generateNextPoint(shot);
-
-        /** Vzdalenost rany **/
-        calculateShotDistance(shot);
 
         /** Ostatni parametry **/
         shot.setGameId(game.getId());
@@ -197,6 +187,19 @@ public class ShotCaptureDraw {
         shot.setDeviation(0); // defaultni hodnota je vzdy presna
         shot.setSpecification(ShotSpecification.STRAIGHT);
         shot.setBallPosition(BallPosition.OK);
+
+        /** Bod "od" **/
+        shot.setFromX(pointFrom.getPixelX());
+        shot.setFromY(pointFrom.getPixelY());
+        shot.setFromLatitude(pointFrom.getLatitude());
+        shot.setFromlongitude(pointFrom.getLongitude());
+        shot.setFromAreaType(AreaType.TEE);
+
+        /** Bod "Kam" **/
+        generateNextPoint(shot);
+
+        /** Vzdalenost rany **/
+        calculateShotDistance(shot);
 
         actualShot = shot;
 
@@ -247,7 +250,7 @@ public class ShotCaptureDraw {
         shot.setToY(nbDrive.getPixelY());
         shot.setToLatitude(nbDrive.getLatitude());
         shot.setToLongitude(nbDrive.getLongitude());
-        shot.setToAreaType(AreaType.GREEN);
+        shot.setToAreaType(AreaType.FAIRWAY);
     }
 
     /** Nastaveni NB 100 jako bodu dopadu **/
@@ -257,7 +260,7 @@ public class ShotCaptureDraw {
         shot.setToY(nb100.getPixelY());
         shot.setToLatitude(nb100.getLatitude());
         shot.setToLongitude(nb100.getLongitude());
-        shot.setToAreaType(AreaType.GREEN);
+        shot.setToAreaType(AreaType.FAIRWAY);
     }
 
     /*** ULOZENI RANY ***/
@@ -301,15 +304,6 @@ public class ShotCaptureDraw {
 
         Shot shot = new Shot();
 
-        /** Bod "od" **/
-        generateFromPoint(previousShot,shot);
-
-        /** Bod "Kam" **/
-        generateNextPoint(shot);
-
-        /** Vzdalenost rany **/
-        calculateShotDistance(shot);
-
         /** Ostatni parametry **/
         shot.setGameId(game.getId());
         shot.setHoleId(hole.getId());
@@ -318,6 +312,15 @@ public class ShotCaptureDraw {
         shot.setDeviation(0); // defaultni hodnota je vzdy presna
         shot.setSpecification(ShotSpecification.STRAIGHT);
         shot.setBallPosition(BallPosition.OK);
+
+        /** Bod "od" **/
+        generateFromPoint(previousShot, shot);
+
+        /** Bod "Kam" **/
+        generateNextPoint(shot);
+
+        /** Vzdalenost rany **/
+        calculateShotDistance(shot);
 
         actualShot = shot;
 
@@ -583,9 +586,7 @@ public class ShotCaptureDraw {
     /** Vykresleni "puntiku na konci linky. Jeho velikost je ovlivnena cislem rany" **/
     public void drawLineEnd(Shot shot) {
 
-        int x1 = shot.getFromX();
         int x2 = shot.getToX();
-        int y1 = shot.getFromY();
         int y2 = shot.getToY();
 
         /* U rany na green rany je vykreslen vetsi "puntik" */
@@ -595,11 +596,49 @@ public class ShotCaptureDraw {
             canvas.drawCircle(x2,y2,circleRadius,paintCircle);
         }
 
-        /** Vykresleni "Fajfky" **/
+        /* Vykresleni symbolu na zaklade plochy dopadu */
+        drawLineEndSymbol(shot);
+    }
+
+    /** Vykresleni symbolu na konci rany na zaklade plochy dopadu **/
+    public void drawLineEndSymbol(Shot shot) {
+
+        Drawable drawable = dShotDone;
+
+        int x2 = shot.getToX();
+        int y2 = shot.getToY();
+
+        /** Vypocet souradnic pro vykresleni **/
         int x = x2-textMargin-textSize;
         int y = y2-textSize;
-        dShotDone.setBounds(x, y, x + textSize * 2, y + textSize * 2);
-        dShotDone.draw(canvas);
+
+        switch (shot.getToAreaType()) {
+
+            /* Vse v poradku */
+            case AreaType.FAIRWAY:
+            case AreaType.GREEN:
+            case AreaType.SEMIROUGH:
+            case AreaType.TEE:
+                drawable = dShotDone;
+                break;
+            /* Spatny povrch */
+            case AreaType.ROUGHT:
+            case AreaType.BIOZONE:
+            case AreaType.BUNKER:
+                drawable = dBiozone;
+               break;
+            /* Voda */
+            case AreaType.WATER:
+                drawable = dWater;
+                break;
+            /* Out */
+            case AreaType.OUT:
+                drawable = dOut;
+                break;
+        }
+
+        drawable.setBounds(x, y, x + textSize * 2, y + textSize * 2);
+        drawable.draw(canvas);
     }
 
     /** Vykresleni konce aktivni rany **/

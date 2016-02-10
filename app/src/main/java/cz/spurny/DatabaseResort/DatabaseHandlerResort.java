@@ -299,7 +299,7 @@ public class DatabaseHandlerResort extends SQLiteOpenHelper {
         return resort;
     }
 
-    /* Ziskani vsech polozek tabulky Rana */
+    /* Ziskani vsech polozek tabulky Resort */
     public List<Resort> getAllResorts() {
 
         List<Resort> resorts = new ArrayList<>();

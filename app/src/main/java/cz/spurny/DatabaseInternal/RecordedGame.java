@@ -1,24 +1,24 @@
 package cz.spurny.DatabaseInternal;
 
 /**
- * Objekt: SavedGame.java
- * Popis:  Objekt uchovavajici ulozenou hru.
+ * Objekt: RecordedGame.java
+ * Popis:  Objekt uchovavajici zaznamenanou hru.
  * Autor:  Frantisek Spurny
  * Datum:  19.08.2015
  */
-public class SavedGame {
+public class RecordedGame {
 
     private int id;
     private int gameId;
 
-    public SavedGame() {
+    public RecordedGame() {
     }
 
-    public SavedGame(int gameId) {
+    public RecordedGame(int gameId) {
         this.gameId = gameId;
     }
 
-    public SavedGame(int id, int gameId) {
+    public RecordedGame(int id, int gameId) {
         this.id = id;
         this.gameId = gameId;
     }

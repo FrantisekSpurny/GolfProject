@@ -26,15 +26,15 @@ public class Weather {
     public static String getString(int weather,Context context) {
 
         switch (weather) {
-            case 0:
+            case SUNNY:
                 return context.getString(R.string.Weather_string_sunny);
-            case 1:
+            case PARTLYCLOUDY:
                 return context.getString(R.string.Weather_string_partlyCloudy);
-            case 2:
+            case CLOUDY:
                 return context.getString(R.string.Weather_string_cloudy);
-            case 3:
+            case RAIN:
                 return context.getString(R.string.Weather_string_rain);
-            case 4:
+            case THUNDER:
                 return context.getString(R.string.Weather_string_thunder);
         }
         return null;

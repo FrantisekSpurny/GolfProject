@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">GolfStat</string>
     <string name="ok">Ok</string>
+    <string name="no">Ne</string>
     <string name="cancel">Zrušit</string>
     <string name="ApplicationTerminate_string_dialogMessage">Opravdu chcete ukončit tuto aplikaci?</string>
     <string name="MainMenu_string_newGame">Nová hra</string>
@@ -204,5 +205,14 @@
     <string name="RecordGame_string_windSpeed">Rychlost větru</string>
     <string name="RecordGame_string_courseRoughness">Tvrdost hřistě</string>
     <string name="RecordGame_string_recordGame">Zaznamenat hru</string>
+    <string name="SelectSavedGame_string_title">Uložené hry</string>
+    <string name="SelectSavedGameAdapter_string_date">Datum:</string>
+    <string name="SelectSavedGameAdapter_string_resort">Resort:</string>
+    <string name="SelectSavedGameAdapter_string_courses">Hřiště:</string>
+    <string name="SelectSavedGameAdapter_string_player">Hráč</string>
+    <string name="NoSavedGames_string_toast">Neexistují žádné uložené hry</string>
+    <string name="SavedGameErase_string_title">Opravdu chcete vymazat tuto uloženou hru?</string>
+    <string name="SavedGameErasedSuccessfully_string_toast">Uložená hra úspěšně odstraněna</string>
+    <string name="AreaType_string_tee">Tee</string>
 
 </resources>

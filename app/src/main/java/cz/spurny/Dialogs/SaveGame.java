@@ -11,7 +11,9 @@ import android.widget.CompoundButton;
 
 import cz.spurny.CreateGame.MainMenu;
 import cz.spurny.CreateGame.R;
+import cz.spurny.DatabaseInternal.DatabaseHandlerInternal;
 import cz.spurny.DatabaseInternal.Game;
+import cz.spurny.DatabaseInternal.SavedGame;
 import cz.spurny.Settings.UserPreferences;
 import cz.spurny.Toasts.GameRecordedSuccessfully;
 import cz.spurny.Toasts.GameSavedSuccessfully;
@@ -25,7 +27,7 @@ import cz.spurny.Toasts.GameSavedSuccessfully;
 
 public class SaveGame {
 
-    public static Dialog dialog(final Context context,Game game) {
+    public static Dialog dialog(final Context context,final Game game) {
 
         Dialog dialog = null;
 
@@ -53,7 +55,19 @@ public class SaveGame {
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
 
-                                /* TODO pridani do ulozenych her */
+                                Boolean isSaved;
+
+                                /* Pripojeni databaze */
+                                DatabaseHandlerInternal dbi = new DatabaseHandlerInternal(context);
+                                isSaved = dbi.isGameSaved(game.getId());
+
+                                /* Hra jeste neni ulozena */
+                                if (!isSaved) {
+                                    dbi.createSavedGame(new SavedGame(game.getId()));
+                                }
+
+                                /* Uzavreni databaze */
+                                dbi.close();
 
                                 /* Zobrazeni Toast ze je hra zaznamenana */
                                 GameSavedSuccessfully.getToast(context).show();
@@ -64,12 +78,13 @@ public class SaveGame {
                             }
                         })
 
-               /* Negativni volba */
-                .setNegativeButton(context.getString(R.string.cancel),
+                /* Negativni volba */
+                .setNegativeButton(context.getString(R.string.no),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                               /* zavreni dialogu */
-                                dialog.cancel();
+                                /* Prechod do hlavniho menu */
+                                Intent iMainMenu = new Intent(context,MainMenu.class);
+                                context.startActivity(iMainMenu);
                             }
                         });
 

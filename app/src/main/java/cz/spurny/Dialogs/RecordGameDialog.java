@@ -11,7 +11,9 @@ import android.widget.CompoundButton;
 
 import cz.spurny.CreateGame.MainMenu;
 import cz.spurny.CreateGame.R;
+import cz.spurny.DatabaseInternal.DatabaseHandlerInternal;
 import cz.spurny.DatabaseInternal.Game;
+import cz.spurny.DatabaseInternal.RecordedGame;
 import cz.spurny.Settings.UserPreferences;
 import cz.spurny.Toasts.GameRecordedSuccessfully;
 
@@ -23,7 +25,7 @@ import cz.spurny.Toasts.GameRecordedSuccessfully;
  */
 public class RecordGameDialog {
 
-    public static Dialog dialog(final Context context,Game game) {
+    public static Dialog dialog(final Context context, final Game game) {
 
         Dialog dialog = null;
 
@@ -51,7 +53,13 @@ public class RecordGameDialog {
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
 
-                                /* TODO pridani do zaznamenanych her */
+                                /* Pridani do zaznamenanych her */
+                                DatabaseHandlerInternal dbi = new DatabaseHandlerInternal(context);
+                                dbi.createRecordedGame(new RecordedGame(game.getId()));
+
+                                /* Pokud byla tato hra ulozena, je odebrana z ulozenych her */
+                                if(dbi.isGameSaved(game.getId()))
+                                    dbi.deleteSavedGame(dbi.getSavedGame(game.getId()).getId());
 
                                 /* Zobrazeni Toast ze je hra zaznamenana */
                                 GameRecordedSuccessfully.getToast(context).show();

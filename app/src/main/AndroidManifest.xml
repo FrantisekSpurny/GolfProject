@@ -9,10 +9,11 @@
 
     <application
         android:allowBackup="true"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/daidalos_app_name">
         <activity
-            android:name=".MainMenu"
-            android:label="@string/MainMenu_string_title" >
+            android:name=".MainMenu">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -67,6 +68,10 @@
         <activity
             android:name="cz.spurny.Game.RecordGame"
             android:label="@string/RecordGame_string_title" >
+        </activity>
+        <activity
+            android:name="cz.spurny.LoadGame.SelectSavedGame"
+            android:label="@string/SelectSavedGame_string_title" >
         </activity>
     </application>
 

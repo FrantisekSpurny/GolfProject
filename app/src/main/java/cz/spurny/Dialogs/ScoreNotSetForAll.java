@@ -12,6 +12,7 @@ import cz.spurny.CreateGame.MainMenu;
 import cz.spurny.CreateGame.R;
 import cz.spurny.DatabaseInternal.DatabaseHandlerInternal;
 import cz.spurny.DatabaseInternal.Game;
+import cz.spurny.DatabaseInternal.SavedGame;
 import cz.spurny.Game.RecordGame;
 import cz.spurny.Settings.UserPreferences;
 import cz.spurny.Toasts.GameRecordedSuccessfully;
@@ -95,8 +96,10 @@ public class ScoreNotSetForAll {
     /** Ulozeni hry **/
     public static void saveGame(Context context,Game game) {
 
-        /* TODO pridani do seznamu ulozenych her */
-
+        /* Pridani do seznamu ulozenych her */
+        DatabaseHandlerInternal dbi = new DatabaseHandlerInternal(context);
+        dbi.createSavedGame(new SavedGame(game.getId()));
+        dbi.close();
 
         /* Informovani uzivatele o uspesnem ulozeni hry */
         GameSavedSuccessfully.getToast(context).show();

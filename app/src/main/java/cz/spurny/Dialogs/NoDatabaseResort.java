@@ -31,6 +31,7 @@ public class NoDatabaseResort {
                             public void onClick(DialogInterface dialog, int id) {
                                 final Intent iSettings  = new Intent(context,Settings.class);
                                 context.startActivity(iSettings);
+                                dialog.cancel();
                             }
                         })
 

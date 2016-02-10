@@ -30,6 +30,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import cz.spurny.Calculations.DistanceCalculations;
+import cz.spurny.Calculations.ScoreCardCounting;
 import cz.spurny.CreateGame.R;
 import cz.spurny.DatabaseInternal.DatabaseHandlerInternal;
 import cz.spurny.DatabaseInternal.Game;
@@ -149,6 +150,8 @@ public class SelectPlaymate extends ActionBarActivity {
 
         gameId = dbi.createGame(game);
 
+        game.setId((int)gameId);
+
         /* Ulozeni zvolenych spoluhracu */
         for (int i = 0;i<isPlaymateList.size();i++) {
             if (isPlaymateList.get(i)) {
@@ -187,15 +190,19 @@ public class SelectPlaymate extends ActionBarActivity {
         double[] holeLengthArray = new double[holeLengthList.size()];
         for(int i = 0; i < holeLengthList.size(); i++) holeLengthArray[i] = holeLengthList.get(i);
 
+        /* Vypocet osobniho paru na jednotlivych jamkach */
+        int[] personalPar = ScoreCardCounting.countPersonalPar((int)idTee1,dbi.getMainPlayer(),game,context);
+
         /* Spusteni aktivity Vyber jamky */
-        goToSelectHole(gameId,holeLengthArray);
+        goToSelectHole(gameId, holeLengthArray, personalPar);
     }
 
     /** Spusteni aktivity "Vyber jamky" **/
-    public void goToSelectHole(long gameId,double[] holeLengthArray) {
+    public void goToSelectHole(long gameId,double[] holeLengthArray,int[] personalPar) {
         Intent iSelectHole = new Intent(this,SelectHole.class);
         iSelectHole.putExtra("EXTRA_SELECT_HOLE_IDGAME",gameId);
         iSelectHole.putExtra("EXTRA_SELECT_HOLE_LENGHT_ARRAY",holeLengthArray);
+        iSelectHole.putExtra("EXTRA_SELECT_HOLE_PERSONAL_PAR",personalPar);
         this.startActivity(iSelectHole);
     }
 

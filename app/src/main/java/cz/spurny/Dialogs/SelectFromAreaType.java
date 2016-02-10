@@ -23,9 +23,9 @@ public class SelectFromAreaType {
     public static Dialog dialog(final Context context,Shot shot) {
 
         /* Tvorba pole retercu pro adapter */
-        String[] areaTypeArray = new String[8];
+        String[] areaTypeArray = new String[9];
 
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 9; i++) {
             areaTypeArray[i] = AreaType.getString(i, context);
         }
 

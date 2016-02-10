@@ -174,7 +174,7 @@ public class ScoreCard extends ActionBarActivity {
     public void displayScoreCard() {
 
         /* Vypocet skore */
-        cz.spurny.Calculations.ScoreCard scoreCard = ScoreCardCounting.countScorecard(game,player,dbi,dbr);
+        cz.spurny.Calculations.ScoreCard scoreCard = ScoreCardCounting.countScorecard(game,player,dbi,dbr,context);
         List<ScoreCardLine> lines = scoreCard.getLines();
 
         /** Prochazeni vsech polozek tabulky **/
@@ -280,7 +280,7 @@ public class ScoreCard extends ActionBarActivity {
         if (score == 0) // nezahrano
             return getResources().getDrawable(R.drawable.not_set);
 
-        switch(par-score) {
+        switch(score-par) {
             case 0: //Par
                 return getResources().getDrawable(R.drawable.par);
             case -1: //Birdie

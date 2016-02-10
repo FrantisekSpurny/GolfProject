@@ -55,7 +55,7 @@ public class CurrentScore extends ActionBarActivity {
         init();
 
         /* Zobrazeni prubezneho skore */
-        displayScore(ScoreCardCounting.countScorecard(game, dbi.getMainPlayer(), dbi, dbr));
+        displayScore(ScoreCardCounting.countScorecard(game, dbi.getMainPlayer(), dbi, dbr,context));
     }
 
     /** Reakce na ukonceni aktivity **/

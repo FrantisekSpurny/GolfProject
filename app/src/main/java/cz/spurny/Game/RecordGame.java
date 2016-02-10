@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TabHost;
@@ -17,9 +18,14 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import cz.spurny.CreateGame.MainMenu;
 import cz.spurny.CreateGame.R;
 import cz.spurny.DatabaseInternal.DatabaseHandlerInternal;
 import cz.spurny.DatabaseInternal.Game;
+import cz.spurny.DatabaseInternal.RecordedGame;
+import cz.spurny.Dialogs.RecordGameDialog;
+import cz.spurny.Settings.UserPreferences;
+import cz.spurny.Toasts.GameRecordedSuccessfully;
 
 public class RecordGame extends ActionBarActivity {
 
@@ -40,6 +46,7 @@ public class RecordGame extends ActionBarActivity {
     TabHost  thWindSpecification;
     TabHost  thWindSpeed;
     TabHost  thCourseRoughness;
+    Button bRecordGame;
 
     /*** ZIVOTNI CYKLUS ***/
 
@@ -53,6 +60,14 @@ public class RecordGame extends ActionBarActivity {
 
         /* Inicializace aktivity */
         init();
+
+        /* Reakce na kliknuti na tlacitko "Zaznamenat hru" */
+        bRecordGame.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                recordGame();
+            }
+        });
     }
 
     /** Reakce na ukonceni aktivity **/
@@ -67,6 +82,44 @@ public class RecordGame extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         return false;
+    }
+
+    /*** ZAZNAM HRY ***/
+
+    /** Ulozeni zadanych parametru do databaze **/
+    public void recordGame() {
+
+        /* Poznamka */
+        game.setDescription(etNote.getText().toString());
+
+        /* Pocasi */
+        game.setWeather(thWeather.getCurrentTab());
+
+        /* Smer vetru */
+        game.setWind(thWindSpecification.getCurrentTab());
+
+        /* Sila vetru */
+        game.setWindPower(thWindSpeed.getCurrentTab());
+
+        /* Tvrdost hriste */
+        game.setCourseToughness(thCourseRoughness.getCurrentTab() - 2);
+
+        if (!UserPreferences.getRecordDialogShow(context))
+            RecordGameDialog.dialog(context,game).show();
+        else {
+            /* Aktualizace hry v DB */
+            dbi.updateGame(game);
+
+            /* Vlozeni hry do seznamu zaznamenanych her */
+            dbi.createRecordedGame(new RecordedGame(game.getId()));
+
+            /* Zobrazni informace o uspesnem zaznamenani */
+            GameRecordedSuccessfully.getToast(context).show();
+
+            /* Prechod na hlavni menu */
+            Intent iMainMenu =  new Intent(context, MainMenu.class);
+            startActivity(iMainMenu);
+        }
     }
 
     /*** INICIALIZACE ***/
@@ -105,6 +158,7 @@ public class RecordGame extends ActionBarActivity {
         thWindSpecification = (TabHost)  findViewById(R.id.RecordGame_tabHost_windSpecification);
         thWindSpeed         = (TabHost)  findViewById(R.id.RecordGame_tabHost_windSpeed);
         thCourseRoughness   = (TabHost)  findViewById(R.id.RecordGame_tabHost_courseRoughness);
+        bRecordGame         = (Button)   findViewById(R.id.RecordGame_button_recordGame);
     }
 
     /** Inicializace "TabHost" polozek **/
